@@ -4,11 +4,11 @@
 
 **Overview**
 
-This application will assist in nutrition planning for various triathlons. Based on race distance and conditions, the application will create a tailored race nutrition strategy for triathletes in accordance with their biometrics. The strategies would be developed based on established guidelines to ensure that the essential macronutrients and calories are absorbed throughout the duration of the race.
+This application will assist in nutrition planning for various triathlons during a racing season. Based on race distance and anticipated race conditions, the application will create tailored nutrition strategies for triathletes, in accordance with their biometrics, over the course of a racing season. The strategies would be developed based on established nutritional guidelines to ensure that the essential macronutrients and calories are absorbed throughout the duration of the race.
 
 **Users**
 
-This application will mostly be used by triathletes to plan their fuelling/nutrition strategy prior to a race. However, it could also be used by endurance athletes practicing any of the three disciplines comprising triathlons – swimming, cycling, and running. 
+This application will mostly be used by triathletes to plan their fuelling/nutrition strategies prior to a racing season. However, it could also be used by endurance athletes practicing any of the three disciplines comprising triathlons – swimming, cycling, and running. 
 
 **Personal Note**
 
@@ -16,7 +16,7 @@ This project is of interest to me as I failed to efficiently devise a race nutri
 
 ## User Stories
 
-- As a user, I want to be able to add personal nutritional/food items and/or supplements such as gels, gummies, fruits, etc. to be used in the development of the nutrition plan. I want to be able to add an arbitrary number of items to the plan based on my preferences and what's available to me.
-- As a user, I want to be able to view a complete race nutrition strategy showing a list of the items to be consumed, macronutrient content, and timing for consumption to help me understand and follow the strategy effectively.
-- As a user, I want to be able to adjust the race nutrition strategy to specific race conditions such as temperature, humidity, estimated durations, etc. to adapt it to any varying environmental factors.
-- As a user, I want to be able to rate the effectiveness of the race nutrition strategy post-race and record my feedback.
+- As a user, I want to be able to develop an arbitrary number of race nutrition strategies during a typical racing season. As I improve in my triathlon journey, I expect to be able to complete more races every season.
+- As a user, I want to be able to specify the quantity and type of nutritional/food items and/or supplements to be used in the development of my nutrition strategy.
+- As a user, I want to be able to view a complete racing season summary of the nutrition strategies developed for each race. This list would show a list of the items to be consumed and their macronutrient content to help me understand and follow the strategies effectively.
+- As a user, I want to be able to rate the effectiveness of the racing season nutrition strategies and record my feedback based on specific parameters.
