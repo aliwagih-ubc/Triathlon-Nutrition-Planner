@@ -1,7 +1,7 @@
 package model.strategy;
 
 import model.nutrition.NutritionItem;
-import model.nutrition.NutritionPlan;
+import model.nutrition.RaceNutrition;
 import model.nutrition.NutritionSummary;
 import model.race.Race;
 import model.triathlete.Triathlete;
@@ -9,28 +9,31 @@ import model.triathlete.Triathlete;
 import java.io.File;
 import java.util.Scanner;
 
-// Represents a complete race nutrition strategy including lists of the
-// items to be consumed.
+// Represents a complete race strategy specific to a triathlete participating in
+// a race event and with defined preferred nutrition items.
 
 public class RaceStrategy {
     private final Triathlete triathlete; // the triathlete participating in race
     private final Race race; // race that this strategy is for
-    private final NutritionPlan preferredNutrition;
+    private final RaceNutrition preferredNutrition;
 
-    public RaceStrategy(Triathlete triathlete, Race race, NutritionPlan preferredNutrition) {
+    // EFFECTS: constructs a race strategy for a specific triathlete, participating in a specific race, and with
+    //          preferred nutrition items.
+    public RaceStrategy(Triathlete triathlete, Race race, RaceNutrition preferredNutrition) {
         this.triathlete = triathlete;
         this.race = race;
         this.preferredNutrition = preferredNutrition;
     }
 
-    // REQUIRES:
-    // MODIFIES:
-    // EFFECTS: get estimated race finish time in minutes.
+    // REQUIRES: this.triathlete.generateAgeGroupGenderIndex() and this.race.generateColumnIndex() are within range.
+    // MODIFIES: this
+    // EFFECTS: gets the average estimated race finish time in minutes from the file based on the provided indices.
+    // Data is obtained from mymottiv.com
     public int getEstimatedFinishTime() throws Exception {
         // read from file.
         String rowIndex = this.triathlete.generateAgeGroupGenderIndex();
         int colIndex = this.race.generateColumnIndex();
-        Scanner sc = new Scanner(new File("../../../../data/estimatedfinishtimes.csv"));
+        Scanner sc = new Scanner(new File("./data/estimatedfinishtimes.csv"));
         sc.useDelimiter(",");
         while (sc.hasNext()) {
             String[] rowSplit = sc.next().split(",");
@@ -42,8 +45,9 @@ public class RaceStrategy {
     }
 
     // REQUIRES:
-    // MODIFIES:
-    // EFFECTS: calculates race requirements
+    // MODIFIES: this
+    // EFFECTS: calculates the required macronutrients to complete a race based on estimated finish times,
+    // race conditions, and nutrition guidelines.
     public NutritionSummary calcRaceRequirement() {
         int estimatedFinishTime;
         try {
@@ -54,18 +58,20 @@ public class RaceStrategy {
         }
         double caloricAbsorptionRate = this.race.calcCaloricAbsorptionRate();
         int calories = (int) (caloricAbsorptionRate * estimatedFinishTime * this.triathlete.getWeight());
-        // TODO: Calculate the following correctly
-        int carbs = 100;
-        int potassium = 100;
-        int sodium = 100;
+        int carbs = 75 * (estimatedFinishTime / 60);
+        int potassium = 250 * (estimatedFinishTime / 60);
+        int sodium = 1000 * (estimatedFinishTime / 60);
         return new NutritionSummary(calories, carbs, potassium, sodium);
     }
 
-    public NutritionPlan calculateOptimumNutritionPlan(NutritionSummary reqs) {
+    // REQUIRES:
+    // MODIFIES: this
+    // EFFECTS: calculates the optimum nutrition plan to complete a race based on the user's preferred nutrition items.
+    public RaceNutrition calculateOptimumNutritionPlan(NutritionSummary reqs) {
         NutritionItem preferredSupplement = preferredNutrition.getSupplement();
         NutritionItem preferredLiquid = preferredNutrition.getLiquid();
         NutritionItem preferredSolid = preferredNutrition.getSolid();
-        NutritionPlan recommendedPlan = new NutritionPlan(preferredSupplement, preferredLiquid, preferredSolid);
+        RaceNutrition recommendedPlan = new RaceNutrition(preferredSupplement, preferredLiquid, preferredSolid);
 
         for (int i = 1; i <= this.race.getMaxSupplements(); i++) {
             recommendedPlan.incrementNumSupplements();

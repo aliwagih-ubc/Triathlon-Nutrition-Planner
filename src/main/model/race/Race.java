@@ -1,35 +1,38 @@
 package model.race;
 
-// Represents a triathlon race.
+import model.nutrition.RaceNutrition;
+
+// Represents a triathlon race with a distance, season held in, and a maximum number of nutritional items allowed.
 public class Race {
     private final String distance; // race distance e.g., "sprint", "olympic", etc.
     private final String season; // racing season e.g., "spring", "summer", etc.
-    private final int maxSupplements;
-    private final int maxLiquids;
-    private final int maxSolids;
+    private final RaceNutrition maxNutrition;
 
-    // EFFECTS: creates a race with distance, estimated finish time, and season
-    public Race(String distance, String season, int maxSupplements, int maxLiquids, int maxSolids) {
+    // EFFECTS: creates a race with its distance, season its held in, and the maximum number of nutrition items allowed.
+    public Race(String distance, String season, RaceNutrition maxNutrition) {
         this.distance = distance;
         this.season = season;
-        this.maxSupplements = maxSupplements;
-        this.maxLiquids = maxLiquids;
-        this.maxSolids = maxSolids;
+        this.maxNutrition = maxNutrition;
     }
 
+    // EFFECTS: returns the maximum number of supplements allowed in the race.
     public int getMaxSupplements() {
-        return maxSupplements;
+        return maxNutrition.getNumSupplements();
     }
 
+    // EFFECTS: returns the maximum number of liquids allowed in the race.
     public int getMaxLiquids() {
-        return maxLiquids;
+        return maxNutrition.getNumLiquids();
     }
 
+    // EFFECTS: returns the maximum number of solids allowed in the race.
     public int getMaxSolids() {
-        return maxSolids;
+        return maxNutrition.getNumSolids();
     }
 
     // REQUIRES: A validated race with one of the 4 expected distances
+    // MODIFIES: this
+    // EFFECTS: generates an index pointer to point to the correct column based on the user's inputs.
     public int generateColumnIndex() {
         if (this.distance.equals("sprint")) {
             return 1;
@@ -42,6 +45,9 @@ public class Race {
         }
     }
 
+    // REQUIRES: A validated race happening during one of the four seasons.
+    // MODIFIES: this
+    // EFFECTS: calculates the anticipated caloric absorption rate based on the anticipated weather conditions.
     public double calcCaloricAbsorptionRate() {
         if (this.season.equals("summer") || this.season.equals("fall")) {
             return 0.18;

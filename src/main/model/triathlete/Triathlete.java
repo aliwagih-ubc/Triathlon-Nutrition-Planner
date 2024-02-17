@@ -4,32 +4,46 @@ package model.triathlete;
 // to be participating in over a season.
 
 public class Triathlete {
-    private final int age; // age in years
-    private final int weight; //weight in kg
-    private final char gender; //'m' or 'f'
+    private final String name;
+    private final int age; // age in years [18, 29]
+    private final int weight; // weight in kg [40, 150]
+    private final String gender; // "Male" or "Female"
     private final int numRaces; // number of races to be participated in the season
 
-    public Triathlete(int age, int weight, char gender, int numRaces) {
+    // EFFECTS: constructs a triathlete with a name, age, weight, gender, and number of races
+    //          they would be participating in over the course of the racing season.
+    public Triathlete(String name, int age, int weight, String gender, int numRaces) {
+        this.name = name;
         this.age = age;
         this.weight = weight;
         this.gender = gender;
         this.numRaces = numRaces;
     }
 
+    // EFFECTS: returns the triathlete's name
+    public String getName() {
+        return name;
+    }
+
+    // EFFECTS: returns the triathlete's weight
     public int getWeight() {
         return weight;
     }
 
+    // EFFECTS: returns the triathlete's number of races in the racing season.
     public int getNumRaces() {
         return numRaces;
     }
 
-    // REQUIRES: validateTriathlete == true
+    // REQUIRES: a valid triathlete
+    // MODIFIES: this
+    // EFFECTS: generates the row index to be used to point to the correct row in the estimatedfinishtimes data file
+    // based on the triathlete's age and gender.
     public String generateAgeGroupGenderIndex() {
         int ageGroupIndex = 1;
         if (this.age >= 25) {
             ageGroupIndex = 2;
         }
-        return Integer.toString(ageGroupIndex) + this.gender;
+        return ageGroupIndex + this.gender;
     }
 }
