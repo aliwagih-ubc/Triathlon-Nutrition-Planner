@@ -9,6 +9,8 @@ import model.triathlete.Triathlete;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.FileNotFoundException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RaceStrategyTest {
@@ -22,14 +24,22 @@ public class RaceStrategyTest {
         NutritionItem gatorade = new NutritionItem("gatorade", 90,22,140,300);
         NutritionItem banana = new NutritionItem("banana", 105, 27, 422, 1);
         RaceNutrition rn = new RaceNutrition(gel, gatorade, banana);
-        Race race = new Race("sprint", "winter", rn);
+        RaceNutrition maxItems = new RaceNutrition(8, 4, 2);
+        Race race = new Race("sprint", "winter", maxItems);
         rs = new RaceStrategy(athlete, race, rn);
+    }
+
+    @Test
+    void testGetEstimatedFinishTimeThrowsException() {
+        assertThrows(FileNotFoundException.class, () ->
+                rs.getEstimatedFinishTime("randomFileThatDoesntExist.csv"));
     }
 
     @Test
     void testGetEstimatedFinishTime() {
         try {
-            assertEquals(87.0, rs.getEstimatedFinishTime());
+            String filePath = "data/estimatedfinishtimes.csv";
+            assertEquals(87.0, rs.getEstimatedFinishTime(filePath));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -45,17 +55,18 @@ public class RaceStrategyTest {
     }
 
     @Test
+    void testCalculateOptimumNutritionPlanNull() {
+        NutritionSummary req = new NutritionSummary(5000, 300, 300, 300);
+        RaceNutrition rn = rs.calculateOptimumNutritionPlan(req);
+        assertNull(rn);
+    }
+
+    @Test
     void testCalculateOptimumNutritionPlan() {
         NutritionSummary req = rs.calcRaceRequirement();
         RaceNutrition rn = rs.calculateOptimumNutritionPlan(req);
-        assertNull(rn);
-//        NutritionItem gel = new NutritionItem("gel", 100, 25, 0, 22);
-//        NutritionItem gatorade = new NutritionItem("gatorade", 90,22,140,300);
-//        NutritionItem banana = new NutritionItem("banana", 105, 27, 422, 1);
-//        RaceNutrition rp = new RaceNutrition(gel, gatorade, banana);
-//        assertEquals(new NutritionItem("gel", 100, 25, 0, 22), rp.getSupplement());
-//        assertEquals(8, rn.getNumSupplements());
-//        assertEquals(4, rn.getNumLiquids());
-//        assertEquals(1, rn.getNumSolids());
+        assertEquals(8, rn.getNumSupplements());
+        assertEquals(4, rn.getNumLiquids());
+        assertEquals(1, rn.getNumSolids());
     }
 }

@@ -31,11 +31,11 @@ public class RaceStrategy {
     // MODIFIES: this
     // EFFECTS: gets the average estimated race finish time in minutes from the file based on the provided indices.
     // Data was obtained from mymottiv.com
-    public double getEstimatedFinishTime() throws Exception {
+    public double getEstimatedFinishTime(String filePath) throws Exception {
         // read from file.
         String rowIndex = this.triathlete.generateAgeGroupGenderIndex();
         int colIndex = this.race.generateColumnIndex();
-        Scanner sc = new Scanner(new File(DATAFILE));
+        Scanner sc = new Scanner(new File(filePath));
         sc.useDelimiter(",");
         while (sc.hasNext()) {
             String[] rowSplit = sc.nextLine().split(",");
@@ -53,7 +53,7 @@ public class RaceStrategy {
     public NutritionSummary calcRaceRequirement() {
         double estimatedFinishTime;
         try {
-            estimatedFinishTime = getEstimatedFinishTime();
+            estimatedFinishTime = getEstimatedFinishTime(DATAFILE);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
