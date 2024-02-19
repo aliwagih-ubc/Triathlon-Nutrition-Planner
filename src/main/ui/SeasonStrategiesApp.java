@@ -173,13 +173,13 @@ public class SeasonStrategiesApp {
     //          depending on the race distance.
     public RaceNutrition getMaxNutritionInRace(String raceDistance) {
         if (raceDistance.equals("sprint")) {
-            return new RaceNutrition(2, 2, 1);
+            return new RaceNutrition(4, 8, 2);
         } else if (raceDistance.equals("olympic")) {
-            return new RaceNutrition(4, 3, 2);
+            return new RaceNutrition(8, 12, 4);
         } else if (raceDistance.equals("halfIM")) {
-            return new RaceNutrition(12, 8, 4);
+            return new RaceNutrition(15, 20, 8);
         } else {
-            return new RaceNutrition(20, 16, 10);
+            return new RaceNutrition(30, 28, 18);
         }
     }
 

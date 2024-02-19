@@ -1,7 +1,7 @@
 package model.nutrition;
 
 // Represents a race nutrition plan composed of a supplement, a liquid, and a solid nutrition item
-// and/or their quantities.
+// or their quantities.
 public class RaceNutrition {
     private NutritionItem supplement;
     private NutritionItem liquid;

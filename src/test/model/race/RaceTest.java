@@ -19,13 +19,20 @@ class RaceTest {
     }
 
     @Test
-    void generateColumnIndex() {
+    void testRace() {
+        assertEquals(1, race1.getMaxSupplements());
+        assertEquals(1, race2.getMaxLiquids());
+        assertEquals(1, race1.getMaxSolids());
+    }
+
+    @Test
+    void testGenerateColumnIndex() {
         assertEquals(1, this.race1.generateColumnIndex());
         assertEquals(4, this.race2.generateColumnIndex());
     }
 
     @Test
-    void calcCaloricAbsorptionRate() {
+    void testCalcCaloricAbsorptionRate() {
         assertEquals(0.15, this.race1.calcCaloricAbsorptionRate());
         assertEquals(0.18, this.race2.calcCaloricAbsorptionRate());
     }

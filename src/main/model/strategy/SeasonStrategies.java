@@ -8,11 +8,11 @@ import java.util.List;
 // Represents a complete racing season summary of the race nutrition strategies
 // developed for all the races.
 
-// EFFECTS: constructs
 public class SeasonStrategies {
     private final String athleteName;
     private final List<RaceNutrition> nutritionPlans;
     private int rating;
+
 
     // EFFECTS: constructs a racing season summary for a triathlete and their rating of the summary's output.
     public SeasonStrategies(String athleteName, int rating) {
@@ -21,8 +21,14 @@ public class SeasonStrategies {
         this.rating = rating;
     }
 
+    // EFFECTS: appends a race nutrition plan to a list of plans.
     public void appendRaceNutrition(RaceNutrition rn) {
         this.nutritionPlans.add(rn);
+    }
+
+    // EFFECTS: returns the nutrition plans in the season strategies object.
+    public List<RaceNutrition> getNutritionPlans() {
+        return nutritionPlans;
     }
 
     // EFFECTS: returns the rating of the season summary.

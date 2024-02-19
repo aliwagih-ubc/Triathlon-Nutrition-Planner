@@ -2,7 +2,6 @@ package model.nutrition;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,38 +11,42 @@ class RaceNutritionTest {
 
     @BeforeEach
     void setUp() {
-        this.numbers = new RaceNutrition(0, 0, 0);
+        numbers = new RaceNutrition(1, 0, 0);
         NutritionItem supplement = new NutritionItem("gel", 10, 20, 10, 1);
         NutritionItem liquid = new NutritionItem("water", 0, 0, 0, 10);
         NutritionItem solid = new NutritionItem("banana", 5, 5, 25, 5);
-        this.items = new RaceNutrition(supplement, liquid, solid);
+        items = new RaceNutrition(supplement, liquid, solid);
     }
 
     @Test
-    void incrementNumSupplements() {
-        assertEquals(0, this.numbers.getNumSupplements());
-        this.numbers.incrementNumSupplements();
-        assertEquals(1, this.numbers.getNumSupplements());
+    void testRaceNutritionNumbers() {
+        assertEquals(1, numbers.getNumSupplements());
+        assertEquals(0, numbers.getNumLiquids());
+        assertEquals(0, numbers.getNumSolids());
     }
 
     @Test
-    void incrementNumLiquids() {
-        assertEquals(0, this.numbers.getNumLiquids());
-        this.numbers.incrementNumLiquids();
-        assertEquals(1, this.numbers.getNumLiquids());
+    void testIncrementNumSupplements() {
+        numbers.incrementNumSupplements();
+        assertEquals(2, numbers.getNumSupplements());
     }
 
     @Test
-    void incrementNumSolids() {
-        assertEquals(0, this.numbers.getNumSolids());
-        this.numbers.incrementNumSolids();
-        assertEquals(1, this.numbers.getNumSolids());
+    void testIncrementNumLiquids() {
+        numbers.incrementNumLiquids();
+        assertEquals(1, numbers.getNumLiquids());
     }
 
     @Test
-    void getSupplementsConsumedNutrition() {
-        this.items.incrementNumSupplements();
-        NutritionSummary totals = this.items.getSupplementsConsumedNutrition();
+    void testIncrementNumSolids() {
+        numbers.incrementNumSolids();
+        assertEquals(1, numbers.getNumSolids());
+    }
+
+    @Test
+    void testGetSupplementsConsumedNutrition() {
+        items.incrementNumSupplements();
+        NutritionSummary totals = items.getSupplementsConsumedNutrition();
         assertEquals(10, totals.getCalories());
         assertEquals(20, totals.getCarbs());
         assertEquals(10, totals.getPotassium());
@@ -51,9 +54,9 @@ class RaceNutritionTest {
     }
 
     @Test
-    void getLiquidsConsumedNutrition() {
-        this.items.incrementNumLiquids();
-        NutritionSummary totals = this.items.getLiquidsConsumedNutrition();
+    void testGetLiquidsConsumedNutrition() {
+        items.incrementNumLiquids();
+        NutritionSummary totals = items.getLiquidsConsumedNutrition();
         assertEquals(0, totals.getCalories());
         assertEquals(0, totals.getCarbs());
         assertEquals(0, totals.getPotassium());
@@ -61,9 +64,9 @@ class RaceNutritionTest {
     }
 
     @Test
-    void getSolidsConsumedNutrition() {
-        this.items.incrementNumSolids();
-        NutritionSummary totals = this.items.getSolidsConsumedNutrition();
+    void testGetSolidsConsumedNutrition() {
+        items.incrementNumSolids();
+        NutritionSummary totals = items.getSolidsConsumedNutrition();
         assertEquals(5, totals.getCalories());
         assertEquals(5, totals.getCarbs());
         assertEquals(25, totals.getPotassium());
@@ -71,11 +74,11 @@ class RaceNutritionTest {
     }
 
     @Test
-    void totalConsumed() {
-        this.items.incrementNumSupplements();
-        this.items.incrementNumLiquids();
-        this.items.incrementNumSolids();
-        NutritionSummary totals = this.items.totalConsumed();
+    void testTotalConsumed() {
+        items.incrementNumSupplements();
+        items.incrementNumLiquids();
+        items.incrementNumSolids();
+        NutritionSummary totals = items.totalConsumed();
         assertEquals(15, totals.getCalories());
         assertEquals(25, totals.getCarbs());
         assertEquals(35, totals.getPotassium());
@@ -83,14 +86,27 @@ class RaceNutritionTest {
     }
 
     @Test
-    void areAllNutritionRequirementsMet() {
-        this.items.incrementNumSupplements();
-        this.items.incrementNumLiquids();
-        this.items.incrementNumSolids();
-        NutritionSummary reqs1 = new NutritionSummary(1, 1, 1, 1);
-        assertTrue(this.items.areAllNutritionRequirementsMet(reqs1));
+    void testAreAllNutritionRequirementsMet() {
+        items.incrementNumSupplements();
+        items.incrementNumLiquids();
+        items.incrementNumSolids();
 
-        NutritionSummary reqs2 = new NutritionSummary(100, 100, 100, 100);
-        assertFalse(this.items.areAllNutritionRequirementsMet(reqs2));
+        NutritionSummary requirementsMet= new NutritionSummary(1, 1, 1, 1);
+        assertTrue(items.areAllNutritionRequirementsMet(requirementsMet));
+
+        NutritionSummary requirementsNotMet = new NutritionSummary(100, 100, 100, 100);
+        assertFalse(items.areAllNutritionRequirementsMet(requirementsNotMet));
+    }
+
+    @Test
+    void testToString() {
+        items.incrementNumSupplements();
+        items.incrementNumLiquids();
+        items.incrementNumSolids();
+
+        String str = "1 gel (Calories: 10 - Carbs: 20 - Potassium: 10 - Sodium: 1)\n"
+                + "1 water (Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 10)\n"
+                + "1 banana (Calories: 5 - Carbs: 5 - Potassium: 25 - Sodium: 5)";
+        assertEquals(str, items.toString());
     }
 }

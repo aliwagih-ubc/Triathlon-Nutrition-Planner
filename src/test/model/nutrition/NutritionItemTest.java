@@ -1,6 +1,5 @@
-package model;
+package model.nutrition;
 
-import model.nutrition.NutritionItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,7 @@ class NutritionItemTest {
 
     @BeforeEach
     void setUp() {
-        this.ni = new NutritionItem("apple", 100, 10, 10, 10);
+        ni = new NutritionItem("apple", 100, 10, 10, 10);
     }
 
     @Test

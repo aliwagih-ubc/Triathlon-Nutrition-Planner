@@ -17,6 +17,8 @@ public class RaceStrategy {
     private final Race race; // race that this strategy is for
     private final RaceNutrition preferredNutrition;
 
+    private static final String DATAFILE  = "data/estimatedfinishtimes.csv";
+
     // EFFECTS: constructs a race strategy for a specific triathlete, participating in a specific race, and with
     //          preferred nutrition items.
     public RaceStrategy(Triathlete triathlete, Race race, RaceNutrition preferredNutrition) {
@@ -28,15 +30,15 @@ public class RaceStrategy {
     // REQUIRES: this.triathlete.generateAgeGroupGenderIndex() and this.race.generateColumnIndex() are within range.
     // MODIFIES: this
     // EFFECTS: gets the average estimated race finish time in minutes from the file based on the provided indices.
-    // Data is obtained from mymottiv.com
-    public int getEstimatedFinishTime() throws Exception {
+    // Data was obtained from mymottiv.com
+    public double getEstimatedFinishTime() throws Exception {
         // read from file.
         String rowIndex = this.triathlete.generateAgeGroupGenderIndex();
         int colIndex = this.race.generateColumnIndex();
-        Scanner sc = new Scanner(new File("./data/estimatedfinishtimes.csv"));
+        Scanner sc = new Scanner(new File(DATAFILE));
         sc.useDelimiter(",");
         while (sc.hasNext()) {
-            String[] rowSplit = sc.next().split(",");
+            String[] rowSplit = sc.nextLine().split(",");
             if (rowSplit[0].equals(rowIndex)) {
                 return Integer.parseInt(rowSplit[colIndex]);
             }
@@ -49,7 +51,7 @@ public class RaceStrategy {
     // EFFECTS: calculates the required macronutrients to complete a race based on estimated finish times,
     // race conditions, and nutrition guidelines.
     public NutritionSummary calcRaceRequirement() {
-        int estimatedFinishTime;
+        double estimatedFinishTime;
         try {
             estimatedFinishTime = getEstimatedFinishTime();
         } catch (Exception e) {
@@ -58,9 +60,9 @@ public class RaceStrategy {
         }
         double caloricAbsorptionRate = this.race.calcCaloricAbsorptionRate();
         int calories = (int) (caloricAbsorptionRate * estimatedFinishTime * this.triathlete.getWeight());
-        int carbs = 75 * (estimatedFinishTime / 60);
-        int potassium = 250 * (estimatedFinishTime / 60);
-        int sodium = 1000 * (estimatedFinishTime / 60);
+        int carbs = (int) (75 * (estimatedFinishTime / 60));
+        int potassium = (int) (250 * (estimatedFinishTime / 60));
+        int sodium = (int) (800 * (estimatedFinishTime / 60));
         return new NutritionSummary(calories, carbs, potassium, sodium);
     }
 
