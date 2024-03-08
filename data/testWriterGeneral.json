@@ -1,0 +1,28 @@
+{
+    "name": "Mike",
+    "rating": 4,
+    "nutrition plans": [
+        {
+            "solidNutrition": "(Calories: 550 - Carbs: 115 - Potassium: 0 - Sodium: 1400)",
+            "numSupplements": 5,
+            "solid": "pretzels",
+            "liquid": "coke",
+            "liquidNutrition": "(Calories: 1000 - Carbs: 275 - Potassium: 100 - Sodium: 200)",
+            "supplement": "chew",
+            "numSolids": 5,
+            "numLiquids": 5,
+            "supplementNutrition": "(Calories: 500 - Carbs: 120 - Potassium: 90 - Sodium: 250)"
+        },
+        {
+            "solidNutrition": "(Calories: 330 - Carbs: 69 - Potassium: 0 - Sodium: 840)",
+            "numSupplements": 2,
+            "solid": "pretzels",
+            "liquid": "coke",
+            "liquidNutrition": "(Calories: 200 - Carbs: 55 - Potassium: 20 - Sodium: 40)",
+            "supplement": "chew",
+            "numSolids": 3,
+            "numLiquids": 1,
+            "supplementNutrition": "(Calories: 200 - Carbs: 48 - Potassium: 36 - Sodium: 100)"
+        }
+    ]
+}

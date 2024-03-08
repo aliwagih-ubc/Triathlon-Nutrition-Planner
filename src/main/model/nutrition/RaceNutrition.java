@@ -1,8 +1,11 @@
 package model.nutrition;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Represents a race nutrition plan composed of a supplement, a liquid, and a solid nutrition item
 // or their quantities.
-public class RaceNutrition {
+public class RaceNutrition implements Writable {
     private NutritionItem supplement;
     private NutritionItem liquid;
     private NutritionItem solid;
@@ -20,6 +23,16 @@ public class RaceNutrition {
 
     // EFFECTS: constructs a race nutrition plan with the quantities of the nutrition items.
     public RaceNutrition(int numSupplements, int numLiquids, int numSolids) {
+        this.numSupplements = numSupplements;
+        this.numLiquids = numLiquids;
+        this.numSolids = numSolids;
+    }
+
+    public RaceNutrition(NutritionItem supplement, NutritionItem liquid, NutritionItem solid,
+                         int numSupplements, int numLiquids, int numSolids) {
+        this.supplement = supplement;
+        this.liquid = liquid;
+        this.solid = solid;
         this.numSupplements = numSupplements;
         this.numLiquids = numLiquids;
         this.numSolids = numSolids;
@@ -139,5 +152,25 @@ public class RaceNutrition {
                 + getLiquidsConsumedNutrition().toString() + "\n"
                 + this.numSolids + " " + this.solid.getItemName() + " "
                 + getSolidsConsumedNutrition().toString();
+    }
+
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns a JSONObject containing the current state of the race nutrition object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("numSupplements", numSupplements);
+        json.put("supplement", supplement.getItemName());
+        json.put("supplementNutrition", getSupplementsConsumedNutrition().toString());
+
+        json.put("numLiquids", numLiquids);
+        json.put("liquid", liquid.getItemName());
+        json.put("liquidNutrition", getLiquidsConsumedNutrition().toString());
+
+        json.put("numSolids", numSolids);
+        json.put("solid", solid.getItemName());
+        json.put("solidNutrition", getSolidsConsumedNutrition().toString());
+
+        return json;
     }
 }

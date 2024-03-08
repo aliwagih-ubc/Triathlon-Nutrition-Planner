@@ -1,6 +1,9 @@
 package model.strategy;
 
 import model.nutrition.RaceNutrition;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +11,7 @@ import java.util.List;
 // Represents a complete racing season summary of the race nutrition strategies
 // developed for all the races.
 
-public class SeasonStrategies {
+public class SeasonStrategies implements Writable {
     private final String athleteName;
     private final List<RaceNutrition> nutritionPlans;
     private int rating;
@@ -31,9 +34,19 @@ public class SeasonStrategies {
         return nutritionPlans;
     }
 
+    // EFFECTS: returns the number of nutrition plans in the season strategies object.
+    public int getNumOfNutritionPlans() {
+        return nutritionPlans.size();
+    }
+
     // EFFECTS: returns the rating of the season summary.
     public int getRating() {
         return rating;
+    }
+
+    // EFFECTS: returns the name of the of athlete in the season strategies object.
+    public String getAthleteName() {
+        return athleteName;
     }
 
     // EFFECTS: sets this rating to rating
@@ -59,4 +72,28 @@ public class SeasonStrategies {
         }
         return str.toString();
     }
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns a JSONObject containing the current state of the Season Strategies object
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("name", athleteName);
+        json.put("rating", rating);
+        json.put("nutrition plans", nutritionPlansToJson());
+        return json;
+    }
+
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns nutrition plans in this Season Strategies object as a JSON array
+    private JSONArray nutritionPlansToJson() {
+        JSONArray jsonArray = new JSONArray();
+
+        for (RaceNutrition rn : nutritionPlans) {
+            jsonArray.put(rn.toJson());
+        }
+        return jsonArray;
+    }
+
+
 }

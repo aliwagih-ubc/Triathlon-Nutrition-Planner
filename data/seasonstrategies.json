@@ -1,0 +1,28 @@
+{
+    "name": "Ali",
+    "rating": 5,
+    "nutrition plans": [
+        {
+            "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
+            "numSupplements": 4,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 720 - Carbs: 176 - Potassium: 1120 - Sodium: 2400)",
+            "supplement": "gel",
+            "numSolids": 1,
+            "numLiquids": 8,
+            "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
+        },
+        {
+            "solidNutrition": "(Calories: 210 - Carbs: 54 - Potassium: 844 - Sodium: 2)",
+            "numSupplements": 35,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 2520 - Carbs: 616 - Potassium: 3920 - Sodium: 8400)",
+            "supplement": "gel",
+            "numSolids": 2,
+            "numLiquids": 28,
+            "supplementNutrition": "(Calories: 3500 - Carbs: 875 - Potassium: 0 - Sodium: 770)"
+        }
+    ]
+}
