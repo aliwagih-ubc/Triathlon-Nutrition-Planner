@@ -5,6 +5,8 @@ import model.nutrition.RaceNutrition;
 import model.nutrition.NutritionSummary;
 import model.race.Race;
 import model.triathlete.Triathlete;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.io.File;
 import java.util.Scanner;
@@ -12,7 +14,7 @@ import java.util.Scanner;
 // Represents a complete race strategy specific to a triathlete participating in
 // a race event and with defined preferred nutrition items.
 
-public class RaceStrategy {
+public class RaceStrategy implements Writable {
     private final Triathlete triathlete; // the triathlete participating in race
     private final Race race; // race that this strategy is for
     private final RaceNutrition preferredNutrition;
@@ -98,5 +100,16 @@ public class RaceStrategy {
 
         // Requirements are NOT met, even with max amount of nutrition given
         return null;
+    }
+
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns a JSONObject containing the current state of the race strategy object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("triathlete", triathlete.toJson());
+        json.put("preferredNutrition", preferredNutrition.toJson());
+        json.put("race", race.toJson());
+        return json;
     }
 }

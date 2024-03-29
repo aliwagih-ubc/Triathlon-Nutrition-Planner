@@ -3,7 +3,10 @@ package model.triathlete;
 // Represents a triathlete with specific biometrics and number of races
 // to be participating in over a season.
 
-public class Triathlete {
+import org.json.JSONObject;
+import persistence.Writable;
+
+public class Triathlete implements Writable {
     private final String name;
     private final int age; // age in years [18, 29]
     private final int weight; // weight in kg [40, 150]
@@ -45,5 +48,16 @@ public class Triathlete {
             ageGroupIndex = 2;
         }
         return ageGroupIndex + this.gender;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("triathleteName", name);
+        json.put("age", age);
+        json.put("weight", weight);
+        json.put("gender", gender);
+        json.put("numRaces", numRaces);
+        return json;
     }
 }

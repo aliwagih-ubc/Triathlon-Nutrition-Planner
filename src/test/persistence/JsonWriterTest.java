@@ -4,6 +4,7 @@ import model.strategy.SeasonStrategies;
 import model.nutrition.RaceNutrition;
 import model.nutrition.NutritionItem;
 
+import model.triathlete.Triathlete;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -15,10 +16,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonWriterTest extends JsonTest{
 
+
     @Test
     void testWriterInvalidFile() {
         try {
-            SeasonStrategies ss = new SeasonStrategies("Ali", 5);
+            NutritionItem gel = new NutritionItem("gel", 100, 25, 0, 22);
+            NutritionItem gatorade = new NutritionItem("gatorade", 90, 22, 140, 300);
+            NutritionItem banana = new NutritionItem("banana", 105, 27, 422, 1);
+            Triathlete athlete = new Triathlete("Ali", 28, 90, "Male", 2);
+            RaceNutrition preferredNutrition = new RaceNutrition(gel, gatorade, banana);
+            int rating = 5;
+            SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition, rating);
             JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
@@ -28,9 +36,15 @@ public class JsonWriterTest extends JsonTest{
     }
 
     @Test
-    void testWriterEmptyWorkroom() {
+    void testWriterEmpty() {
         try {
-            SeasonStrategies ss = new SeasonStrategies("Ali", 5);
+            NutritionItem gel = new NutritionItem("gel", 100, 25, 0, 22);
+            NutritionItem gatorade = new NutritionItem("gatorade", 90, 22, 140, 300);
+            NutritionItem banana = new NutritionItem("banana", 105, 27, 422, 1);
+            Triathlete athlete = new Triathlete("Ali", 28, 90, "Male", 2);
+            RaceNutrition preferredNutrition = new RaceNutrition(gel, gatorade, banana);
+            int rating = 5;
+            SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition, rating);
             JsonWriter writer = new JsonWriter("./data/testWriterEmpty.json");
             writer.open();
             writer.write(ss);
@@ -49,7 +63,8 @@ public class JsonWriterTest extends JsonTest{
     @Test
     void testWriterGeneral() {
         try {
-            SeasonStrategies ss = new SeasonStrategies("Mike", 4);
+            Triathlete athlete = new Triathlete("Mike", 28, 90, "Male", 2);
+            SeasonStrategies ss = new SeasonStrategies(athlete, null, 4);
             NutritionItem supplement = new NutritionItem("chew", 100, 24, 18, 50);
             NutritionItem liquid = new NutritionItem("coke", 200, 55, 20, 40);
             NutritionItem solid = new NutritionItem("pretzels", 110, 23, 0, 280);

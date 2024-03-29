@@ -1,9 +1,11 @@
 package model.race;
 
 import model.nutrition.RaceNutrition;
+import org.json.JSONObject;
+import persistence.Writable;
 
 // Represents a triathlon race with a distance, season held in, and a maximum number of nutritional items allowed.
-public class Race {
+public class Race implements Writable {
     private final String distance; // race distance e.g., "sprint", "olympic", etc.
     private final String season; // racing season e.g., "spring", "summer", etc.
     private final RaceNutrition maxNutrition;
@@ -53,5 +55,16 @@ public class Race {
             return 0.18;
         }
         return 0.15;
+    }
+
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns a JSONObject containing the current state of the race object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("distance", distance);
+        json.put("season", season);
+        json.put("maxNutrition", maxNutrition.toJson());
+        return json;
     }
 }

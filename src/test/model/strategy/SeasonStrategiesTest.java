@@ -3,6 +3,7 @@ package model.strategy;
 import model.nutrition.NutritionItem;
 import model.nutrition.RaceNutrition;
 
+import model.triathlete.Triathlete;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -11,12 +12,21 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SeasonStrategiesTest {
 
     private SeasonStrategies ss;
+    private Triathlete athlete;
+    private RaceNutrition preferredNutrition;
+    private NutritionItem gel;
+    private NutritionItem gatorade;
+    private NutritionItem banana;
 
     @BeforeEach
     void setUp() {
-        String name = "Ali";
+        gel = new NutritionItem("gel", 100, 25, 0, 22);
+        gatorade = new NutritionItem("gatorade", 90, 22, 140, 300);
+        banana = new NutritionItem("banana", 105, 27, 422, 1);
+        athlete = new Triathlete("Ali", 28, 90, "Male", 2);
+        preferredNutrition = new RaceNutrition(gel, gatorade, banana);
         int rating = 4;
-        ss = new SeasonStrategies(name, rating);
+        ss = new SeasonStrategies(athlete, preferredNutrition, rating);
     }
 
     @Test

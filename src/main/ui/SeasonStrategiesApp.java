@@ -8,6 +8,7 @@ import model.strategy.RaceStrategy;
 import model.strategy.SeasonStrategies;
 import model.triathlete.Triathlete;
 
+import org.json.JSONException;
 import persistence.JsonWriter;
 import persistence.JsonReader;
 
@@ -36,8 +37,9 @@ public class SeasonStrategiesApp {
     private final List<String> possibleCommands = new ArrayList<>();
 
     private static final String JSON_STORE = "./data/seasonstrategies.json";
-    private JsonWriter jsonWriter;
-    private JsonReader jsonReader;
+    private final JsonWriter jsonWriter;
+    private final JsonReader jsonReader;
+
 
     // EFFECTS: constructs a SeasonStrategiesApp object
     public SeasonStrategiesApp() throws FileNotFoundException {
@@ -113,8 +115,8 @@ public class SeasonStrategiesApp {
         availableSupplements.add(new NutritionItem("gel", 100, 25, 0, 22));
         availableSupplements.add(new NutritionItem("chew", 100, 24, 18, 50));
 
-        availableLiquids.add(new NutritionItem("water", 0,0,0,10));
-        availableLiquids.add(new NutritionItem("gatorade", 90,22,140,300));
+        availableLiquids.add(new NutritionItem("water", 0, 0, 0, 10));
+        availableLiquids.add(new NutritionItem("gatorade", 90, 22, 140, 300));
         availableLiquids.add(new NutritionItem("coke", 200, 55, 20, 40));
 
         availableSolids.add(new NutritionItem("banana", 105, 27, 422, 1));
@@ -297,12 +299,12 @@ public class SeasonStrategiesApp {
     // EFFECTS: loads season strategies from file
     public SeasonStrategies loadSeasonStrategies() {
         try {
-            SeasonStrategies ss = jsonReader.read();
-            System.out.println("Loaded " + ss.getAthleteName()
-                    + "'s Season Strategies from" + JSON_STORE);
-            return ss;
+            return jsonReader.read();
         } catch (IOException e) {
             System.out.println("Unable to read from file: " + JSON_STORE);
+            return null;
+        } catch (JSONException e) {
+            System.out.println("Failed to parse JSON object from file: " + JSON_STORE);
             return null;
         }
     }
@@ -323,58 +325,103 @@ public class SeasonStrategiesApp {
 
 
     // EFFECTS: query for info about race conditions, create a race strategy for each race, and add to Season Strategies
-    public void createRaceStrategy(Scanner sc, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss) {
-        for (int i = 1; i <= athlete.getNumRaces(); i++) {
+    public void createRaceStrategy(Scanner sc, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss,
+                                   int numRaces) {
+        for (int i = 1; i <= numRaces; i++) {
             System.out.println("Asking for input about race #" + i);
             Race race = queryRaceInfo(sc);
             RaceStrategy strategy = new RaceStrategy(athlete, race, nutrition);
+            ss.appendRaceStrategy(strategy);
             NutritionSummary raceRequirements = strategy.calcRaceRequirement();
             RaceNutrition plan = strategy.calculateOptimumNutritionPlan(raceRequirements);
             ss.appendRaceNutrition(plan);
         }
     }
 
-    // EFFECTS: queries user to load saved season strategies, calls methods to query user for biometrics, number of
+    // EFFECTS: creates race nutrition object to store athlete's preferred nutrition.
+    public RaceNutrition createPreferredNutrition(SeasonStrategies ss) {
+        RaceNutrition savedPreferredNutrition = ss.getPreferredNutrition();
+        return new RaceNutrition(
+                getPreferredSupplement(savedPreferredNutrition.getSupplement().getItemName()),
+                getPreferredLiquid(savedPreferredNutrition.getLiquid().getItemName()),
+                getPreferredSolid(savedPreferredNutrition.getSolid().getItemName()));
+    }
+
+    // EFFECTS: queries user for rating, sets it, and prints thank you message.
+    public void setQueriedRating(Scanner sc, SeasonStrategies ss) {
+        ss.setRating(queryRating(sc));
+        System.out.println("Thank you for your rating of " + ss.getRating() + "!");
+    }
+
+    // EFFECTS: checks if loaded season strategies exist, queries user for race strategies to add. Calls methods to
+    //          query race information for added races and creates a race strategy based on the race's
+    //          macronutrient requirements. Lastly, it queries the user to rate the updated season strategy. Prior to
+    //          exiting, it queries the user to save the season strategies to file.
+    public void runAfterLoadingFile(SeasonStrategies ss, Scanner sc) {
+        if (ss != null) {
+            System.out.println("Loaded " + ss.getAthleteName() + "'s Season Strategies from" + JSON_STORE);
+            ValidateIntInput v1 = (i) -> i >= 0;
+            int racesToAdd = queryUserForIntWithRetry(sc,
+                    "How many races would you like to add to this existing plan?", v1);
+            if (racesToAdd == 0) {
+                System.out.println(ss);
+                System.out.println("No changes made to existing plan!");
+            } else {
+                createRaceStrategy(sc, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
+                System.out.println(ss);
+                // Query user for a new plan rating and set it
+                setQueriedRating(sc, ss);
+                // Ask user to save Season Strategies to file and validates input is possible.
+                if (queryUserForStringNoRetry(sc, "Do you want to save this season's race "
+                                + "nutrition strategies? If yes, please enter 'Save' to save to file",
+                        possibleCommands.get(1))) {
+                    saveSeasonStrategies(ss);
+                }
+            }
+        } else {
+            System.out.println("Failed to load existing strategies or no saved strategies. Starting new.");
+        }
+    }
+
+    // EFFECTS: calls methods to query user for biometrics, number of
     //          races, preferred nutrition items, and race information to create a race strategy based on the race's
     //          macronutrient requirements. Next, it creates a racing season strategy and outputs it. Lastly, it queries
     //          the user to rate the season strategy. Prior to exiting, it queries the user to save the season
     //          strategies to file.
-    public void run() {
-        // Create a scanner object to query user for input
-        Scanner sc = new Scanner(System.in);
-
-        // Ask user to load saved Season Strategies and validates input is possible.
-        if (queryUserForStringNoRetry(sc, "Do you want to load the previous season's race "
-                + "nutrition strategies? If yes, please enter 'Load' to load from file", possibleCommands.get(0))) {
-            SeasonStrategies ss = loadSeasonStrategies();
-            System.out.println(ss);
-            return;
-        }
-
-        // Ask user for personal inputs
+    public void runWithoutLoadingFile(Scanner sc) {
         Triathlete athlete = queryBiometrics(sc);
-
-        // Ask user for preferred nutrition items
-        RaceNutrition nutrition = queryNutritionInfo(sc);
-
-        // Store final results in a SeasonStrategies object
-        SeasonStrategies ss = new SeasonStrategies(athlete.getName(), 0);
-
+        RaceNutrition preferredNutrition = queryNutritionInfo(sc);
+        SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition,0);
         // For each race, query for info about race conditions, create a race strategy, and add to season strategies
-        createRaceStrategy(sc, athlete, nutrition, ss);
-
+        createRaceStrategy(sc, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
         // Print final results to user
         System.out.println(ss);
-
         // Query user for plan rating and set it
-        ss.setRating(queryRating(sc));
-        System.out.println("Thank you for your rating of " + ss.getRating() + "!");
-
-
+        setQueriedRating(sc, ss);
         // Ask user to save Season Strategies to file and validates input is possible.
         if (queryUserForStringNoRetry(sc, "Do you want to save this season's race "
                 + "nutrition strategies? If yes, please enter 'Save' to save to file", possibleCommands.get(1))) {
             saveSeasonStrategies(ss);
         }
     }
+
+    // EFFECTS: queries user to load saved season strategies. If loaded, calls method to run with loaded file. If not
+    //          loaded, calls method to run without loaded file.
+    public void run() {
+        // Create a scanner object to query user for input
+        Scanner sc = new Scanner(System.in);
+        // Ask user to load saved Season Strategies and validates input is possible.
+        if (queryUserForStringNoRetry(sc, "Do you want to load the previous season's race "
+                + "nutrition strategies? If yes, please enter 'Load' to load from file", possibleCommands.get(0))) {
+            SeasonStrategies ss = loadSeasonStrategies();
+            //runs with loaded file
+            runAfterLoadingFile(ss, sc);
+            return;
+        } else {
+            System.out.println("Not loading previous season's race nutrition strategies!");
+        }
+        //runs without loaded file
+        runWithoutLoadingFile(sc);
+    }
+
 }

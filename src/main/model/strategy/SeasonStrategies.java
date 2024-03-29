@@ -1,6 +1,7 @@
 package model.strategy;
 
 import model.nutrition.RaceNutrition;
+import model.triathlete.Triathlete;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
@@ -12,15 +13,19 @@ import java.util.List;
 // developed for all the races.
 
 public class SeasonStrategies implements Writable {
-    private final String athleteName;
     private final List<RaceNutrition> nutritionPlans;
     private int rating;
+    private Triathlete athlete;
+    private final List<RaceStrategy> strategies;
+    private RaceNutrition preferredNutrition;
 
 
     // EFFECTS: constructs a racing season summary for a triathlete and their rating of the summary's output.
-    public SeasonStrategies(String athleteName, int rating) {
-        this.athleteName = athleteName;
+    public SeasonStrategies(Triathlete athlete, RaceNutrition preferredNutrition, int rating) {
+        this.athlete = athlete;
+        this.preferredNutrition = preferredNutrition;
         this.nutritionPlans = new ArrayList<>();
+        this.strategies = new ArrayList<>();
         this.rating = rating;
     }
 
@@ -29,9 +34,19 @@ public class SeasonStrategies implements Writable {
         this.nutritionPlans.add(rn);
     }
 
+    // EFFECTS: appends a race strategy to a list of strategies.
+    public void appendRaceStrategy(RaceStrategy rs) {
+        this.strategies.add(rs);
+    }
+
     // EFFECTS: returns the nutrition plans in the season strategies object.
     public List<RaceNutrition> getNutritionPlans() {
         return nutritionPlans;
+    }
+
+    // EFFECTS: returns the strategies in the season strategies object.
+    public List<RaceStrategy> getStrategies() {
+        return strategies;
     }
 
     // EFFECTS: returns the number of nutrition plans in the season strategies object.
@@ -46,7 +61,23 @@ public class SeasonStrategies implements Writable {
 
     // EFFECTS: returns the name of the of athlete in the season strategies object.
     public String getAthleteName() {
-        return athleteName;
+        return athlete.getName();
+    }
+
+    public Triathlete getAthlete() {
+        return athlete;
+    }
+
+    public void setAthlete(Triathlete athlete) {
+        this.athlete = athlete;
+    }
+
+    public RaceNutrition getPreferredNutrition() {
+        return preferredNutrition;
+    }
+
+    public void setPreferredNutrition(RaceNutrition preferredNutrition) {
+        this.preferredNutrition = preferredNutrition;
     }
 
     // EFFECTS: sets this rating to rating
@@ -60,7 +91,7 @@ public class SeasonStrategies implements Writable {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        str.append("Season strategy for ").append(athleteName);
+        str.append("Season strategy for ").append(athlete.getName());
         for (int i = 1; i <= nutritionPlans.size(); i++) {
             str.append("\n").append("Race #").append(i).append("\n");
             RaceNutrition plan = nutritionPlans.get(i - 1);
@@ -78,9 +109,11 @@ public class SeasonStrategies implements Writable {
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-        json.put("name", athleteName);
+        json.put("athlete", athlete.toJson());
+        json.put("preferred nutrition", preferredNutrition.toJson());
         json.put("rating", rating);
         json.put("nutrition plans", nutritionPlansToJson());
+        json.put("race strategies", strategiesToJson());
         return json;
     }
 
@@ -90,10 +123,31 @@ public class SeasonStrategies implements Writable {
         JSONArray jsonArray = new JSONArray();
 
         for (RaceNutrition rn : nutritionPlans) {
-            jsonArray.put(rn.toJson());
+            if (rn == null) {
+                JSONObject noPossiblePlanJson = new JSONObject();
+                noPossiblePlanJson.put("nutrition plan", "No possible plan within the maximum nutrition limit for "
+                        + "this race");
+                jsonArray.put(noPossiblePlanJson);
+            } else {
+                jsonArray.put(rn.toJson());
+            }
         }
         return jsonArray;
     }
 
-
+    // Modified from code in the JsonSerializationDemo project provided for reference.
+    // EFFECTS: returns strategies in this Season Strategies object as a JSON array
+    private JSONArray strategiesToJson() {
+        JSONArray jsonArray = new JSONArray();
+        for (RaceStrategy rs : strategies) {
+            if (rs == null) {
+                JSONObject noPossibleStrategyJson = new JSONObject();
+                noPossibleStrategyJson.put("race strategy", "No strategy exists for this race");
+                jsonArray.put(noPossibleStrategyJson);
+            } else {
+                jsonArray.put(rs.toJson());
+            }
+        }
+        return jsonArray;
+    }
 }

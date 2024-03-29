@@ -160,16 +160,22 @@ public class RaceNutrition implements Writable {
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         json.put("numSupplements", numSupplements);
-        json.put("supplement", supplement.getItemName());
-        json.put("supplementNutrition", getSupplementsConsumedNutrition().toString());
+        if (supplement != null) {
+            json.put("supplement", supplement.getItemName());
+            json.put("supplementNutrition", getSupplementsConsumedNutrition().toString());
+        }
 
         json.put("numLiquids", numLiquids);
-        json.put("liquid", liquid.getItemName());
-        json.put("liquidNutrition", getLiquidsConsumedNutrition().toString());
+        if (liquid != null) {
+            json.put("liquid", liquid.getItemName());
+            json.put("liquidNutrition", getLiquidsConsumedNutrition().toString());
+        }
 
         json.put("numSolids", numSolids);
-        json.put("solid", solid.getItemName());
-        json.put("solidNutrition", getSolidsConsumedNutrition().toString());
+        if (solid != null) {
+            json.put("solid", solid.getItemName());
+            json.put("solidNutrition", getSolidsConsumedNutrition().toString());
+        }
 
         return json;
     }
