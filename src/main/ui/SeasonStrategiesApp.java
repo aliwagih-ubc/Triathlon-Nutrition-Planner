@@ -12,15 +12,16 @@ import org.json.JSONException;
 import persistence.JsonWriter;
 import persistence.JsonReader;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 // Defines the possible options for the user to pick from and the max allowable nutrition items.
 // Instantiates nutrition items. Queries user for inputs and calls methods from main package to return output.
-public class SeasonStrategiesApp {
+public class SeasonStrategiesApp extends JFrame {
     private final List<String> possibleGenders = new ArrayList<>();
 
     private final List<String> possibleRaceDistance = new ArrayList<>();
@@ -40,6 +41,9 @@ public class SeasonStrategiesApp {
     private final JsonWriter jsonWriter;
     private final JsonReader jsonReader;
 
+    private static final int WIDTH = 1800;
+    private static final int HEIGHT = 1600;
+    private final JDesktopPane desktop;
 
     // EFFECTS: constructs a SeasonStrategiesApp object
     public SeasonStrategiesApp() throws FileNotFoundException {
@@ -63,6 +67,13 @@ public class SeasonStrategiesApp {
 
         // Construct a jsonReader to read from source file
         jsonReader = new JsonReader(JSON_STORE);
+
+        // Construct GUI desktop pane
+        desktop = new JDesktopPane();
+        setContentPane(desktop);
+        setTitle("Season Strategies App");
+        setSize(WIDTH, HEIGHT);
+        setVisible(true);
     }
 
     // MODIFIES: this
@@ -123,6 +134,14 @@ public class SeasonStrategiesApp {
         availableSolids.add(new NutritionItem("pretzels", 110, 23, 0, 280));
     }
 
+    public interface UserInteraction {
+        String queryUserForStringWithRetry(String inputMessage, ValidateStringInput vs);
+
+        int queryUserForIntWithRetry(String inputMessage, ValidateIntInput vi);
+
+        void output(String message);
+    }
+
     // EFFECTS: validates a string input. Returns true if valid, false otherwise
     public interface ValidateStringInput {
         boolean validate(String input);
@@ -133,79 +152,30 @@ public class SeasonStrategiesApp {
         boolean validate(int input);
     }
 
-    // EFFECTS: Queries the user for a string input. Allows the user to continue querying if an unexpected input or
-    //    // wrong input type is received.
-    public String queryUserForStringWithRetry(Scanner sc, String inputMessage, ValidateStringInput vs) {
-        while (true) {
-            System.out.println(inputMessage);
-            try {
-                String input = sc.nextLine();
-                if (vs.validate(input)) {
-                    return input;
-                } else {
-                    System.out.println("Received unexpected input, please try again");
-                }
-            } catch (Exception e) {
-                System.out.println("Received wrong input type, please try again");
-            }
-        }
-    }
-
-    // EFFECTS: Queries the user for a string input.
-    public boolean queryUserForStringNoRetry(Scanner sc, String inputMessage, String expectedString) {
-        System.out.println(inputMessage);
-        try {
-            String input = sc.nextLine();
-            return (expectedString.equals(input));
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-
-    // EFFECTS: Queries the user for an int input. Allows the user to continue querying if an unexpected input or
-    // wrong input type is received.
-    public int queryUserForIntWithRetry(Scanner sc, String inputMessage, ValidateIntInput vi) {
-        while (true) {
-            System.out.println(inputMessage);
-            try {
-                String strInput = sc.nextLine();
-                int input = Integer.parseInt(strInput);
-                if (vi.validate(input)) {
-                    return input;
-                } else {
-                    System.out.println("Received unexpected input, please try again");
-                }
-            } catch (Exception e) {
-                System.out.println("Received wrong input type, please try again");
-            }
-        }
-    }
-
     // EFFECTS: queries the user for their biometrics and validates that user is a Triathlete (as defined in class).
-    public Triathlete queryBiometrics(Scanner sc) {
+    public Triathlete queryBiometrics(UserInteraction ui) {
         // Check that the user gives a name
         ValidateStringInput v1 = (i) -> i.length() != 0;
-        String name = queryUserForStringWithRetry(sc, "What is your name?", v1);
+        String name = ui.queryUserForStringWithRetry("What is your name?", v1);
 
         // Check that user gives an age between [18, 29]
         ValidateIntInput v2 = (i) -> i >= 18 && i <= 29;
-        int age = queryUserForIntWithRetry(sc, "What is your age (in years)? "
+        int age = ui.queryUserForIntWithRetry("What is your age (in years)? "
                 + "Please enter a value between 18 and 29.", v2);
 
         // Check that user gives a weight between [40, 150]
         ValidateIntInput v3 = (i) -> i >= 40 && i <= 150;
-        int weight = queryUserForIntWithRetry(sc, "What is your weight (in kg)? "
+        int weight = ui.queryUserForIntWithRetry("What is your weight (in kg)? "
                 + "Please enter a value between 40 and 150.", v3);
 
         // Check that user gives a possible gender
         ValidateStringInput v4 = possibleGenders::contains;
-        String gender = queryUserForStringWithRetry(sc, "\"Male\" or \"Female\"? "
+        String gender = ui.queryUserForStringWithRetry("\"Male\" or \"Female\"? "
                 + "Please enter gender exactly as indicated.", v4);
 
         // Check that user gives a positive nonzero number of races
         ValidateIntInput v5 = (i) -> i > 0;
-        int numRaces = queryUserForIntWithRetry(sc, "How many races are you participating in? "
+        int numRaces = ui.queryUserForIntWithRetry("How many races are you participating in? "
                 + "Please enter a value greater than zero", v5);
         return new Triathlete(name, age, weight, gender, numRaces);
     }
@@ -226,10 +196,10 @@ public class SeasonStrategiesApp {
     }
 
     // EFFECTS: queries the user for the race information and validates that inputs are possible.
-    public Race queryRaceInfo(Scanner sc) {
+    public Race queryRaceInfo(UserInteraction ui) {
         // Check that user gives a possible race distance
         ValidateStringInput v1 = possibleRaceDistance::contains;
-        String raceDistance = queryUserForStringWithRetry(sc, "What distance is this race? "
+        String raceDistance = ui.queryUserForStringWithRetry("What distance is this race? "
                 + "Please enter one of: sprint, olympic, halfIM, or fullIM", v1);
 
         // Get max nutrition amounts based on race distance
@@ -237,7 +207,7 @@ public class SeasonStrategiesApp {
 
         // Check that user gives a possible race distance
         ValidateStringInput v2 = possibleRaceSeason::contains;
-        String raceSeason = queryUserForStringWithRetry(sc, "What season is this race being held in? "
+        String raceSeason = ui.queryUserForStringWithRetry("What season is this race being held in? "
                 + "Please enter one of: summer, fall, winter, or spring", v2);
         return new Race(raceDistance, raceSeason, maxNutrition);
     }
@@ -272,64 +242,63 @@ public class SeasonStrategiesApp {
     }
 
     // EFFECTS: queries the user for their preferred nutrition items and validates that inputs are possible.
-    public RaceNutrition queryNutritionInfo(Scanner sc) {
+    public RaceNutrition queryNutritionInfo(UserInteraction ui) {
         ValidateStringInput v1 = availableSupplementNames::contains;
-        String supplement = queryUserForStringWithRetry(sc, "What is your preferred supplement? "
+        String supplement = ui.queryUserForStringWithRetry("What is your preferred supplement? "
                 + "Please pick either gel or chew", v1);
 
         ValidateStringInput v2 = availableLiquidNames::contains;
-        String liquid = queryUserForStringWithRetry(sc, "What is your preferred liquid? "
+        String liquid = ui.queryUserForStringWithRetry("What is your preferred liquid? "
                 + "Please pick one of water, gatorade, or coke", v2);
 
         ValidateStringInput v3 = availableSolidNames::contains;
-        String solid = queryUserForStringWithRetry(sc, "What is your preferred solid food? "
+        String solid = ui.queryUserForStringWithRetry("What is your preferred solid food? "
                 + "Please pick either banana or pretzels", v3);
         return new RaceNutrition(getPreferredSupplement(supplement), getPreferredLiquid(liquid),
                 getPreferredSolid(solid));
     }
 
     // EFFECTS: queries the user for their rating of the season strategies and validates input.
-    public int queryRating(Scanner sc) {
+    public int queryRating(UserInteraction ui) {
         ValidateIntInput v1 = (i) -> i >= 1 && i <= 5;
-        return queryUserForIntWithRetry(sc, "How pleased are you with the provided plans [1-5]?", v1);
+        return ui.queryUserForIntWithRetry("How pleased are you with the provided plans [1-5]?", v1);
     }
 
     // Modified from code in the JsonSerializationDemo project provided for reference.
     // MODIFIES: this
     // EFFECTS: loads season strategies from file
-    public SeasonStrategies loadSeasonStrategies() {
+    public SeasonStrategies loadSeasonStrategies(UserInteraction ui) {
         try {
             return jsonReader.read();
         } catch (IOException e) {
-            System.out.println("Unable to read from file: " + JSON_STORE);
+            ui.output("Unable to read from file: " + JSON_STORE);
             return null;
         } catch (JSONException e) {
-            System.out.println("Failed to parse JSON object from file: " + JSON_STORE);
+            ui.output("Failed to parse JSON object from file: " + JSON_STORE);
             return null;
         }
     }
 
     // Modified from code in the JsonSerializationDemo project provided for reference.
     // EFFECTS: saves the season strategies to file
-    public void saveSeasonStrategies(SeasonStrategies ss) {
+    public void saveSeasonStrategies(SeasonStrategies ss, UserInteraction ui) {
         try {
             jsonWriter.open();
             jsonWriter.write(ss);
             jsonWriter.close();
-            System.out.println("Saved " + ss.getAthleteName()
+            ui.output("Saved " + ss.getAthleteName()
                     + "'s Season Strategies to" + JSON_STORE);
         } catch (FileNotFoundException e) {
-            System.out.println("Unable to write to file: " + JSON_STORE);
+            ui.output("Unable to write to file: " + JSON_STORE);
         }
     }
 
-
     // EFFECTS: query for info about race conditions, create a race strategy for each race, and add to Season Strategies
-    public void createRaceStrategy(Scanner sc, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss,
+    public void createRaceStrategy(UserInteraction ui, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss,
                                    int numRaces) {
         for (int i = 1; i <= numRaces; i++) {
-            System.out.println("Asking for input about race #" + i);
-            Race race = queryRaceInfo(sc);
+            ui.output("Asking for input about race #" + i);
+            Race race = queryRaceInfo(ui);
             RaceStrategy strategy = new RaceStrategy(athlete, race, nutrition);
             ss.appendRaceStrategy(strategy);
             NutritionSummary raceRequirements = strategy.calcRaceRequirement();
@@ -348,38 +317,40 @@ public class SeasonStrategiesApp {
     }
 
     // EFFECTS: queries user for rating, sets it, and prints thank you message.
-    public void setQueriedRating(Scanner sc, SeasonStrategies ss) {
-        ss.setRating(queryRating(sc));
-        System.out.println("Thank you for your rating of " + ss.getRating() + "!");
+    public void setQueriedRating(UserInteraction ui, SeasonStrategies ss) {
+        ss.setRating(queryRating(ui));
+        ui.output("Thank you for your rating of " + ss.getRating() + "!");
     }
 
     // EFFECTS: checks if loaded season strategies exist, queries user for race strategies to add. Calls methods to
     //          query race information for added races and creates a race strategy based on the race's
     //          macronutrient requirements. Lastly, it queries the user to rate the updated season strategy. Prior to
     //          exiting, it queries the user to save the season strategies to file.
-    public void runAfterLoadingFile(SeasonStrategies ss, Scanner sc) {
+    public void runAfterLoadingFile(SeasonStrategies ss, UserInteraction ui) {
         if (ss != null) {
-            System.out.println("Loaded " + ss.getAthleteName() + "'s Season Strategies from" + JSON_STORE);
+            ui.output("Loaded " + ss.getAthleteName() + "'s Season Strategies from" + JSON_STORE);
             ValidateIntInput v1 = (i) -> i >= 0;
-            int racesToAdd = queryUserForIntWithRetry(sc,
+            int racesToAdd = ui.queryUserForIntWithRetry(
                     "How many races would you like to add to this existing plan?", v1);
             if (racesToAdd == 0) {
-                System.out.println(ss);
-                System.out.println("No changes made to existing plan!");
+                ui.output(ss.toString());
+                ui.output("No changes made to existing plan!");
             } else {
-                createRaceStrategy(sc, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
-                System.out.println(ss);
+                createRaceStrategy(ui, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
+                ui.output(ss.toString());
                 // Query user for a new plan rating and set it
-                setQueriedRating(sc, ss);
+                setQueriedRating(ui, ss);
                 // Ask user to save Season Strategies to file and validates input is possible.
-                if (queryUserForStringNoRetry(sc, "Do you want to save this season's race "
-                                + "nutrition strategies? If yes, please enter 'Save' to save to file",
-                        possibleCommands.get(1))) {
-                    saveSeasonStrategies(ss);
+                ValidateStringInput v2 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
+                String save = ui.queryUserForStringWithRetry("Do you want to save this season's race "
+                        + "nutrition strategies? If yes, please enter 'Save' to save to file, "
+                        + "if no, please enter 'No'", v2);
+                if (save.equals(possibleCommands.get(1))) {
+                    saveSeasonStrategies(ss, ui);
                 }
             }
         } else {
-            System.out.println("Failed to load existing strategies or no saved strategies. Starting new.");
+            ui.output("Failed to load existing strategies or no saved strategies. Starting new.");
         }
     }
 
@@ -388,40 +359,57 @@ public class SeasonStrategiesApp {
     //          macronutrient requirements. Next, it creates a racing season strategy and outputs it. Lastly, it queries
     //          the user to rate the season strategy. Prior to exiting, it queries the user to save the season
     //          strategies to file.
-    public void runWithoutLoadingFile(Scanner sc) {
-        Triathlete athlete = queryBiometrics(sc);
-        RaceNutrition preferredNutrition = queryNutritionInfo(sc);
+    public void runWithoutLoadingFile(UserInteraction ui) {
+        Triathlete athlete = queryBiometrics(ui);
+        RaceNutrition preferredNutrition = queryNutritionInfo(ui);
         SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition,0);
         // For each race, query for info about race conditions, create a race strategy, and add to season strategies
-        createRaceStrategy(sc, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
+        createRaceStrategy(ui, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
         // Print final results to user
-        System.out.println(ss);
+        ui.output(ss.toString());
         // Query user for plan rating and set it
-        setQueriedRating(sc, ss);
+        setQueriedRating(ui, ss);
         // Ask user to save Season Strategies to file and validates input is possible.
-        if (queryUserForStringNoRetry(sc, "Do you want to save this season's race "
-                + "nutrition strategies? If yes, please enter 'Save' to save to file", possibleCommands.get(1))) {
-            saveSeasonStrategies(ss);
+        ValidateStringInput v1 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
+        String save = ui.queryUserForStringWithRetry("Do you want to save this season's race "
+                + "nutrition strategies? If yes, please enter 'Save' to save to file, "
+                + "if no, please enter 'No'", v1);
+        if (save.equals(possibleCommands.get(1))) {
+            saveSeasonStrategies(ss, ui);
         }
     }
 
     // EFFECTS: queries user to load saved season strategies. If loaded, calls method to run with loaded file. If not
     //          loaded, calls method to run without loaded file.
     public void run() {
-        // Create a scanner object to query user for input
-        Scanner sc = new Scanner(System.in);
-        // Ask user to load saved Season Strategies and validates input is possible.
-        if (queryUserForStringNoRetry(sc, "Do you want to load the previous season's race "
-                + "nutrition strategies? If yes, please enter 'Load' to load from file", possibleCommands.get(0))) {
-            SeasonStrategies ss = loadSeasonStrategies();
-            //runs with loaded file
-            runAfterLoadingFile(ss, sc);
-            return;
-        } else {
-            System.out.println("Not loading previous season's race nutrition strategies!");
-        }
-        //runs without loaded file
-        runWithoutLoadingFile(sc);
-    }
+        // Create a user interaction object to query user for input
+        UserInteraction ui = new GuiInteraction();
 
+        // Ask user if they want to continue with the GUI or revert to the console
+        ValidateStringInput v1 = (i) -> i.equals("Yes") || i.equals("No");
+        String useGui = ui.queryUserForStringWithRetry("Do you want to continue with the GUI? "
+                + "If yes, please enter 'Yes', "
+                + "if no, please enter 'No' to switch to the console version", v1);
+        if (useGui.equals("No")) {
+            ui = new ConsoleInteraction();
+        } else {
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        }
+
+        // Ask user to load saved Season Strategies and validates input is possible.
+        ValidateStringInput v2 = (i) -> i.equals(possibleCommands.get(0)) || i.equals("No");
+        String load = ui.queryUserForStringWithRetry("Do you want to load the previous season's race "
+                + "nutrition strategies? If yes, please enter 'Load' to load from file, "
+                + "if no, please enter 'No'", v2);
+        if (load.equals(possibleCommands.get(0))) {
+            SeasonStrategies ss = loadSeasonStrategies(ui);
+            //runs with loaded file
+            runAfterLoadingFile(ss, ui);
+        } else {
+            ui.output("Not loading previous season's race nutrition strategies!");
+            //runs without loaded file
+            runWithoutLoadingFile(ui);
+        }
+        System.exit(0);
+    }
 }

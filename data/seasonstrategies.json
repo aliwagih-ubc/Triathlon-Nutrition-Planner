@@ -6,7 +6,7 @@
         "weight": 90,
         "age": 28
     },
-    "rating": 3,
+    "rating": 4,
     "race strategies": [
         {
             "triathlete": {
@@ -94,6 +94,122 @@
                 "numLiquids": 0,
                 "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
             }
+        },
+        {
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 4,
+                    "numSolids": 2,
+                    "numLiquids": 8
+                },
+                "distance": "sprint",
+                "season": "winter"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
+        },
+        {
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 35,
+                    "numSolids": 12,
+                    "numLiquids": 28
+                },
+                "distance": "halfIM",
+                "season": "summer"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
+        },
+        {
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 4,
+                    "numSolids": 2,
+                    "numLiquids": 8
+                },
+                "distance": "sprint",
+                "season": "winter"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
+        },
+        {
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 10,
+                    "numSolids": 6,
+                    "numLiquids": 14
+                },
+                "distance": "olympic",
+                "season": "winter"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
         }
     ],
     "preferred nutrition": {
@@ -140,6 +256,50 @@
             "numSolids": 1,
             "numLiquids": 8,
             "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
+        },
+        {
+            "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
+            "numSupplements": 4,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 720 - Carbs: 176 - Potassium: 1120 - Sodium: 2400)",
+            "supplement": "gel",
+            "numSolids": 1,
+            "numLiquids": 8,
+            "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
+        },
+        {
+            "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
+            "numSupplements": 35,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 2520 - Carbs: 616 - Potassium: 3920 - Sodium: 8400)",
+            "supplement": "gel",
+            "numSolids": 1,
+            "numLiquids": 28,
+            "supplementNutrition": "(Calories: 3500 - Carbs: 875 - Potassium: 0 - Sodium: 770)"
+        },
+        {
+            "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
+            "numSupplements": 4,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 720 - Carbs: 176 - Potassium: 1120 - Sodium: 2400)",
+            "supplement": "gel",
+            "numSolids": 1,
+            "numLiquids": 8,
+            "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
+        },
+        {
+            "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+            "numSupplements": 10,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 1170 - Carbs: 286 - Potassium: 1820 - Sodium: 3900)",
+            "supplement": "gel",
+            "numSolids": 0,
+            "numLiquids": 13,
+            "supplementNutrition": "(Calories: 1000 - Carbs: 250 - Potassium: 0 - Sodium: 220)"
         }
     ]
 }
