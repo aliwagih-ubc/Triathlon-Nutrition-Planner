@@ -13,6 +13,7 @@ public class Triathlete implements Writable {
     private final String gender; // "Male" or "Female"
     private final int numRaces; // number of races to be participated in the season
 
+
     // EFFECTS: constructs a triathlete with a name, age, weight, gender, and number of races
     //          they would be participating in over the course of the racing season.
     public Triathlete(String name, int age, int weight, String gender, int numRaces) {
@@ -36,6 +37,16 @@ public class Triathlete implements Writable {
     // EFFECTS: returns the triathlete's number of races in the racing season.
     public int getNumRaces() {
         return numRaces;
+    }
+
+    // EFFECTS: returns the triathlete's age
+    public int getAge() {
+        return age;
+    }
+
+    // EFFECTS: returns the triathlete's gender
+    public String getGender() {
+        return gender;
     }
 
     // REQUIRES: a valid triathlete

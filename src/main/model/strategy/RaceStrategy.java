@@ -21,12 +21,29 @@ public class RaceStrategy implements Writable {
 
     private static final String DATAFILE  = "data/estimatedfinishtimes.csv";
 
+
+
     // EFFECTS: constructs a race strategy for a specific triathlete, participating in a specific race, and with
     //          preferred nutrition items.
     public RaceStrategy(Triathlete triathlete, Race race, RaceNutrition preferredNutrition) {
         this.triathlete = triathlete;
         this.race = race;
         this.preferredNutrition = preferredNutrition;
+    }
+
+    // EFFECTS: returns the triathlete that this race strategy is for.
+    public Triathlete getTriathlete() {
+        return triathlete;
+    }
+
+    // EFFECTS: returns the race that this strategy is developed for.
+    public Race getRace() {
+        return race;
+    }
+
+    // EFFECTS: returns the preferred nutrition of the triathlete that this strategy is developed according to.
+    public RaceNutrition getPreferredNutrition() {
+        return preferredNutrition;
     }
 
     // REQUIRES: this.triathlete.generateAgeGroupGenderIndex() and this.race.generateColumnIndex() are within range.
@@ -101,6 +118,7 @@ public class RaceStrategy implements Writable {
         // Requirements are NOT met, even with max amount of nutrition given
         return null;
     }
+
 
     // Modified from code in the JsonSerializationDemo project provided for reference.
     // EFFECTS: returns a JSONObject containing the current state of the race strategy object

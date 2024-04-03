@@ -1,5 +1,23 @@
 {
-    "name": "Ali",
-    "rating": 5,
+    "athlete": {
+        "triathleteName": "Ali",
+        "gender": "Male",
+        "numRaces": 0,
+        "weight": 0,
+        "age": 0
+    },
+    "rating": 0,
+    "race strategies": [],
+    "preferred nutrition": {
+        "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+        "numSupplements": 0,
+        "solid": "banana",
+        "liquid": "gatorade",
+        "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+        "supplement": "gel",
+        "numSolids": 0,
+        "numLiquids": 0,
+        "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+    },
     "nutrition plans": []
 }

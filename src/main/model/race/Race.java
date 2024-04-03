@@ -10,12 +10,29 @@ public class Race implements Writable {
     private final String season; // racing season e.g., "spring", "summer", etc.
     private final RaceNutrition maxNutrition;
 
+
     // EFFECTS: creates a race with its distance, season its held in, and the maximum number of nutrition items allowed.
     public Race(String distance, String season, RaceNutrition maxNutrition) {
         this.distance = distance;
         this.season = season;
         this.maxNutrition = maxNutrition;
     }
+
+    // EFFECTS: returns the distance of the race.
+    public String getDistance() {
+        return distance;
+    }
+
+    // EFFECTS: returns the season of the race.
+    public String getSeason() {
+        return season;
+    }
+
+    // EFFECTS: returns the max nutrition allowed in the race.
+    public RaceNutrition getMaxNutrition() {
+        return maxNutrition;
+    }
+
 
     // EFFECTS: returns the maximum number of supplements allowed in the race.
     public int getMaxSupplements() {

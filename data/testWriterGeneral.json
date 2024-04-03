@@ -1,28 +1,107 @@
 {
-    "name": "Mike",
-    "rating": 4,
-    "nutrition plans": [
+    "athlete": {
+        "triathleteName": "Ali",
+        "gender": "Male",
+        "numRaces": 2,
+        "weight": 90,
+        "age": 28
+    },
+    "rating": 5,
+    "race strategies": [
         {
-            "solidNutrition": "(Calories: 550 - Carbs: 115 - Potassium: 0 - Sodium: 1400)",
-            "numSupplements": 5,
-            "solid": "pretzels",
-            "liquid": "coke",
-            "liquidNutrition": "(Calories: 1000 - Carbs: 275 - Potassium: 100 - Sodium: 200)",
-            "supplement": "chew",
-            "numSolids": 5,
-            "numLiquids": 5,
-            "supplementNutrition": "(Calories: 500 - Carbs: 120 - Potassium: 90 - Sodium: 250)"
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 4,
+                    "numSolids": 2,
+                    "numLiquids": 8
+                },
+                "distance": "sprint",
+                "season": "winter"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
         },
         {
-            "solidNutrition": "(Calories: 330 - Carbs: 69 - Potassium: 0 - Sodium: 840)",
-            "numSupplements": 2,
-            "solid": "pretzels",
-            "liquid": "coke",
-            "liquidNutrition": "(Calories: 200 - Carbs: 55 - Potassium: 20 - Sodium: 40)",
-            "supplement": "chew",
-            "numSolids": 3,
-            "numLiquids": 1,
-            "supplementNutrition": "(Calories: 200 - Carbs: 48 - Potassium: 36 - Sodium: 100)"
-        }
+            "triathlete": {
+                "triathleteName": "Ali",
+                "gender": "Male",
+                "numRaces": 2,
+                "weight": 90,
+                "age": 28
+            },
+            "race": {
+                "maxNutrition": {
+                    "numSupplements": 50,
+                    "numSolids": 40,
+                    "numLiquids": 40
+                },
+                "distance": "fullIM",
+                "season": "summer"
+            },
+            "preferredNutrition": {
+                "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "numSupplements": 0,
+                "solid": "banana",
+                "liquid": "gatorade",
+                "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+                "supplement": "gel",
+                "numSolids": 0,
+                "numLiquids": 0,
+                "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+            }
+        },
+        {"race strategy": "No strategy exists for this race"}
+    ],
+    "preferred nutrition": {
+        "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+        "numSupplements": 0,
+        "solid": "banana",
+        "liquid": "gatorade",
+        "liquidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
+        "supplement": "gel",
+        "numSolids": 0,
+        "numLiquids": 0,
+        "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
+    },
+    "nutrition plans": [
+        {
+            "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
+            "numSupplements": 4,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 720 - Carbs: 176 - Potassium: 1120 - Sodium: 2400)",
+            "supplement": "gel",
+            "numSolids": 1,
+            "numLiquids": 8,
+            "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
+        },
+        {
+            "solidNutrition": "(Calories: 3465 - Carbs: 891 - Potassium: 13926 - Sodium: 33)",
+            "numSupplements": 50,
+            "solid": "banana",
+            "liquid": "gatorade",
+            "liquidNutrition": "(Calories: 3600 - Carbs: 880 - Potassium: 5600 - Sodium: 12000)",
+            "supplement": "gel",
+            "numSolids": 33,
+            "numLiquids": 40,
+            "supplementNutrition": "(Calories: 5000 - Carbs: 1250 - Potassium: 0 - Sodium: 1100)"
+        },
+        {"nutrition plan": "No possible plan within the maximum nutrition limit for this race"}
     ]
 }

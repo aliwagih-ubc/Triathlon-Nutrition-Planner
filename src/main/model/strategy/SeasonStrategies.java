@@ -50,6 +50,11 @@ public class SeasonStrategies implements Writable {
     }
 
     // EFFECTS: returns the number of nutrition plans in the season strategies object.
+    public int getNumOfStrategies() {
+        return strategies.size();
+    }
+
+    // EFFECTS: returns the number of nutrition plans in the season strategies object.
     public int getNumOfNutritionPlans() {
         return nutritionPlans.size();
     }
@@ -64,18 +69,22 @@ public class SeasonStrategies implements Writable {
         return athlete.getName();
     }
 
+    // EFFECTS: returns the triathlete object in the season strategies object.
     public Triathlete getAthlete() {
         return athlete;
     }
 
+    // EFFECTS: sets this triathlete to triathlete
     public void setAthlete(Triathlete athlete) {
         this.athlete = athlete;
     }
 
+    // EFFECTS: returns the preferred nutrition object in the season strategies object.
     public RaceNutrition getPreferredNutrition() {
         return preferredNutrition;
     }
 
+    // EFFECTS: sets this preferred nutrition to preferred nutrition
     public void setPreferredNutrition(RaceNutrition preferredNutrition) {
         this.preferredNutrition = preferredNutrition;
     }

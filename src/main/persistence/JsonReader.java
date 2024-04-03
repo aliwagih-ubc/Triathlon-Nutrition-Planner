@@ -93,23 +93,27 @@ public class JsonReader {
 
     // EFFECTS: parses the string representation of the race nutrition and returns a race nutrition object
     private RaceNutrition parseRaceNutrition(JSONObject jsonObject) {
-        int numSupplements = jsonObject.getInt("numSupplements");
-        String supplement = jsonObject.getString("supplement");
-        NutritionItem supplementNutrition = parseNutritionSummaryString(supplement, numSupplements,
-                jsonObject.getString("supplementNutrition"));
+        try {
+            jsonObject.getString("nutrition plan");
+            return null;
+        } catch (JSONException e) {
+            int numSupplements = jsonObject.getInt("numSupplements");
+            String supplement = jsonObject.getString("supplement");
+            NutritionItem supplementNutrition = parseNutritionSummaryString(supplement, numSupplements,
+                    jsonObject.getString("supplementNutrition"));
 
-        int numLiquids = jsonObject.getInt("numLiquids");
-        String liquid = jsonObject.getString("liquid");
-        NutritionItem liquidNutrition = parseNutritionSummaryString(liquid, numLiquids,
-                jsonObject.getString("liquidNutrition"));
+            int numLiquids = jsonObject.getInt("numLiquids");
+            String liquid = jsonObject.getString("liquid");
+            NutritionItem liquidNutrition = parseNutritionSummaryString(liquid, numLiquids,
+                    jsonObject.getString("liquidNutrition"));
 
-        int numSolids = jsonObject.getInt("numSolids");
-        String solid = jsonObject.getString("solid");
-        NutritionItem solidNutrition = parseNutritionSummaryString(solid, numSolids,
-                jsonObject.getString("solidNutrition"));
-
-        return new RaceNutrition(supplementNutrition, liquidNutrition, solidNutrition,
-                numSupplements, numLiquids, numSolids);
+            int numSolids = jsonObject.getInt("numSolids");
+            String solid = jsonObject.getString("solid");
+            NutritionItem solidNutrition = parseNutritionSummaryString(solid, numSolids,
+                    jsonObject.getString("solidNutrition"));
+            return new RaceNutrition(supplementNutrition, liquidNutrition, solidNutrition,
+                    numSupplements, numLiquids, numSolids);
+        }
     }
 
     private RaceNutrition parseMaxNutrition(JSONObject jsonObject) {
@@ -148,10 +152,15 @@ public class JsonReader {
     // MODIFIES: ss
     // EFFECTS: parses race strategy from JSON object and adds it to Season Strategies
     private void addStrategy(SeasonStrategies ss, JSONObject jsonObject) {
-        Triathlete athlete = parseTriathlete(jsonObject.getJSONObject("triathlete"));
-        RaceNutrition preferredNutrition = parseRaceNutrition(jsonObject.getJSONObject("preferredNutrition"));
-        Race race = parseRace(jsonObject.getJSONObject("race"));
-        ss.appendRaceStrategy(new RaceStrategy(athlete, race, preferredNutrition));
+        try {
+            jsonObject.getString("race strategy");
+            ss.appendRaceStrategy(null);
+        } catch (JSONException e) {
+            Triathlete athlete = parseTriathlete(jsonObject.getJSONObject("triathlete"));
+            RaceNutrition preferredNutrition = parseRaceNutrition(jsonObject.getJSONObject("preferredNutrition"));
+            Race race = parseRace(jsonObject.getJSONObject("race"));
+            ss.appendRaceStrategy(new RaceStrategy(athlete, race, preferredNutrition));
+        }
     }
 
 }

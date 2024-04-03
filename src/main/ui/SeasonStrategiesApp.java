@@ -17,6 +17,8 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.List;
 
 // Defines the possible options for the user to pick from and the max allowable nutrition items.
@@ -307,6 +309,36 @@ public class SeasonStrategiesApp extends JFrame {
         }
     }
 
+    @SuppressWarnings("methodlength")
+    public HashMap obtainMaxNutrition(SeasonStrategies ss) {
+        HashMap<String, Integer> itemCounts = new HashMap<>();
+        for (RaceNutrition rn : ss.getNutritionPlans()) {
+            if (rn != null) {
+                String itemName = rn.getSupplement().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSupplements());
+                itemName = rn.getLiquid().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumLiquids());
+                itemName = rn.getSolid().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSolids());
+            }
+        }
+        int max = 0;
+        String maxNI = "";
+        for (Map.Entry<String, Integer> entry : itemCounts.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                maxNI = entry.getKey();
+            }
+        }
+        HashMap<String, Integer> maxNutrition = new HashMap<>();
+        if (!maxNI.isEmpty()) {
+            maxNutrition.put(maxNI, max);
+            return maxNutrition;
+        }
+        return null;
+    }
+
+
     // EFFECTS: creates race nutrition object to store athlete's preferred nutrition.
     public RaceNutrition createPreferredNutrition(SeasonStrategies ss) {
         RaceNutrition savedPreferredNutrition = ss.getPreferredNutrition();
@@ -326,25 +358,32 @@ public class SeasonStrategiesApp extends JFrame {
     //          query race information for added races and creates a race strategy based on the race's
     //          macronutrient requirements. Lastly, it queries the user to rate the updated season strategy. Prior to
     //          exiting, it queries the user to save the season strategies to file.
+    @SuppressWarnings("methodlength")
     public void runAfterLoadingFile(SeasonStrategies ss, UserInteraction ui) {
         if (ss != null) {
             ui.output("Loaded " + ss.getAthleteName() + "'s Season Strategies from" + JSON_STORE);
             ValidateIntInput v1 = (i) -> i >= 0;
-            int racesToAdd = ui.queryUserForIntWithRetry(
-                    "How many races would you like to add to this existing plan?", v1);
+            int racesToAdd = ui.queryUserForIntWithRetry("How many races would you like to add to this plan?", v1);
             if (racesToAdd == 0) {
                 ui.output(ss.toString());
                 ui.output("No changes made to existing plan!");
             } else {
                 createRaceStrategy(ui, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
-                ui.output(ss.toString());
+                ValidateStringInput v2 = (i) -> i.equals("Yes") || i.equals("No");
+                String summary = ui.queryUserForStringWithRetry("Do you want to view a summary of this "
+                        + "season's race nutrition strategies? If yes, please enter 'Yes' to save to file, "
+                        + "if no, please enter 'No'", v2);
+                if (summary.equals("Yes")) {
+                    ui.output(ss.toString());
+                }
+                displayMaxAndImage(ui, ss);
                 // Query user for a new plan rating and set it
                 setQueriedRating(ui, ss);
                 // Ask user to save Season Strategies to file and validates input is possible.
-                ValidateStringInput v2 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
+                ValidateStringInput v3 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
                 String save = ui.queryUserForStringWithRetry("Do you want to save this season's race "
                         + "nutrition strategies? If yes, please enter 'Save' to save to file, "
-                        + "if no, please enter 'No'", v2);
+                        + "if no, please enter 'No'", v3);
                 if (save.equals(possibleCommands.get(1))) {
                     saveSeasonStrategies(ss, ui);
                 }
@@ -365,15 +404,22 @@ public class SeasonStrategiesApp extends JFrame {
         SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition,0);
         // For each race, query for info about race conditions, create a race strategy, and add to season strategies
         createRaceStrategy(ui, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
-        // Print final results to user
-        ui.output(ss.toString());
+        // Print final results to user if prompted
+        ValidateStringInput v1 = (i) -> i.equals("Yes") || i.equals("No");
+        String summary = ui.queryUserForStringWithRetry("Do you want to view a summary of this "
+                + "season's race nutrition strategies? If yes, please enter 'Yes' to view, "
+                + "if no, please enter 'No'", v1);
+        if (summary.equals("Yes")) {
+            ui.output(ss.toString());
+        }
+        displayMaxAndImage(ui, ss);
         // Query user for plan rating and set it
         setQueriedRating(ui, ss);
         // Ask user to save Season Strategies to file and validates input is possible.
-        ValidateStringInput v1 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
+        ValidateStringInput v2 = (i) -> i.equals(possibleCommands.get(1)) || i.equals("No");
         String save = ui.queryUserForStringWithRetry("Do you want to save this season's race "
                 + "nutrition strategies? If yes, please enter 'Save' to save to file, "
-                + "if no, please enter 'No'", v1);
+                + "if no, please enter 'No'", v2);
         if (save.equals(possibleCommands.get(1))) {
             saveSeasonStrategies(ss, ui);
         }
@@ -412,4 +458,41 @@ public class SeasonStrategiesApp extends JFrame {
         }
         System.exit(0);
     }
+
+    // EFFECTS: creates the image and resizes it. Creates the JFrame to display the label and the image. Displays the
+    //          image along with the maximum number of nutrition items needed in the season strategy.
+    @SuppressWarnings("methodlength")
+    public void displayMaxAndImage(UserInteraction ui, SeasonStrategies ss) {
+        ImageIcon icon = new ImageIcon("data/triathlon.jpeg");
+        Image image = icon.getImage().getScaledInstance(1600, -1, Image.SCALE_SMOOTH);
+        icon = new ImageIcon(image);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        JLabel imageLabel = new JLabel(icon, JLabel.CENTER);
+        panel.add(imageLabel, BorderLayout.CENTER);
+
+        // Ask user if they want to view the most frequent nutrition item
+        ValidateStringInput v1 = (i) -> i.equals("Yes") || i.equals("No");
+        String showMax = ui.queryUserForStringWithRetry("Do you want to view the most frequent nutrition "
+                + "item this season? If yes, please enter 'Yes', otherwise please enter 'No'.", v1);
+        if (showMax.equals("Yes")) {
+            HashMap<String, Integer> maxNutritionMap = obtainMaxNutrition(ss);
+            if (maxNutritionMap != null && !maxNutritionMap.isEmpty()) {
+                String maxNI = new ArrayList<String>(maxNutritionMap.keySet()).get(0);
+                int max = maxNutritionMap.get(maxNI);
+                JLabel textLabel = new JLabel("You will need " + max + " " + maxNI + "s. Time to stock up!",
+                        JLabel.CENTER);
+                panel.add(textLabel, BorderLayout.NORTH);
+            }
+        } else {
+            ui.output("Not displaying the most frequent nutrition item this season!");
+        }
+        JFrame maxImageFrame = new JFrame("Happy Racing!");
+        maxImageFrame.add(panel);
+        maxImageFrame.setSize(1800, 800);
+        maxImageFrame.setLocationRelativeTo(null);
+        maxImageFrame.setVisible(true);
+    }
+
 }
