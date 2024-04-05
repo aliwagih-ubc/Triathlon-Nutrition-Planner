@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import model.Event;
+import model.EventLog;
 import model.nutrition.NutritionItem;
 import model.nutrition.RaceNutrition;
 import model.race.Race;
@@ -31,6 +33,8 @@ public class JsonReader {
     public SeasonStrategies read() throws IOException, JSONException {
         String jsonData = readFile(source);
         JSONObject jsonObject = new JSONObject(jsonData);
+        EventLog.getInstance().logEvent(new Event("Loaded saved file."));
+
         return parseSeasonStrategies(jsonObject);
     }
 

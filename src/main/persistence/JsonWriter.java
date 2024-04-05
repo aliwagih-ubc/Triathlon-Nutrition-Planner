@@ -1,5 +1,7 @@
 package persistence;
 
+import model.Event;
+import model.EventLog;
 import model.strategy.SeasonStrategies;
 import org.json.JSONObject;
 
@@ -31,6 +33,8 @@ public class JsonWriter {
     public void write(SeasonStrategies ss) {
         JSONObject json = ss.toJson();
         saveToFile(json.toString(TAB));
+        EventLog.getInstance().logEvent(new Event("Saved current file."));
+
     }
 
     // MODIFIES: this

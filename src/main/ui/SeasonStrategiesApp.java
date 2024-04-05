@@ -1,12 +1,12 @@
 package ui;
 
+import model.EventLog;
 import model.nutrition.NutritionItem;
-import model.nutrition.NutritionSummary;
 import model.nutrition.RaceNutrition;
 import model.race.Race;
-import model.strategy.RaceStrategy;
 import model.strategy.SeasonStrategies;
 import model.triathlete.Triathlete;
+import model.Event;
 
 import org.json.JSONException;
 import persistence.JsonWriter;
@@ -17,7 +17,6 @@ import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
@@ -296,46 +295,18 @@ public class SeasonStrategiesApp extends JFrame {
     }
 
     // EFFECTS: query for info about race conditions, create a race strategy for each race, and add to Season Strategies
-    public void createRaceStrategy(UserInteraction ui, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss,
+    public void obtainRaceStrategy(UserInteraction ui, Triathlete athlete, RaceNutrition nutrition, SeasonStrategies ss,
                                    int numRaces) {
         for (int i = 1; i <= numRaces; i++) {
             ui.output("Asking for input about race #" + i);
             Race race = queryRaceInfo(ui);
-            RaceStrategy strategy = new RaceStrategy(athlete, race, nutrition);
-            ss.appendRaceStrategy(strategy);
-            NutritionSummary raceRequirements = strategy.calcRaceRequirement();
-            RaceNutrition plan = strategy.calculateOptimumNutritionPlan(raceRequirements);
-            ss.appendRaceNutrition(plan);
+            ss.createRaceStrategy(race, athlete, nutrition, ss);
+//            RaceStrategy strategy = new RaceStrategy(athlete, race, nutrition);
+//            ss.appendRaceStrategy(strategy);
+//            NutritionSummary raceRequirements = strategy.calcRaceRequirement();
+//            RaceNutrition plan = strategy.calculateOptimumNutritionPlan(raceRequirements);
+//            ss.appendRaceNutrition(plan);
         }
-    }
-
-    @SuppressWarnings("methodlength")
-    public HashMap obtainMaxNutrition(SeasonStrategies ss) {
-        HashMap<String, Integer> itemCounts = new HashMap<>();
-        for (RaceNutrition rn : ss.getNutritionPlans()) {
-            if (rn != null) {
-                String itemName = rn.getSupplement().getItemName();
-                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSupplements());
-                itemName = rn.getLiquid().getItemName();
-                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumLiquids());
-                itemName = rn.getSolid().getItemName();
-                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSolids());
-            }
-        }
-        int max = 0;
-        String maxNI = "";
-        for (Map.Entry<String, Integer> entry : itemCounts.entrySet()) {
-            if (entry.getValue() > max) {
-                max = entry.getValue();
-                maxNI = entry.getKey();
-            }
-        }
-        HashMap<String, Integer> maxNutrition = new HashMap<>();
-        if (!maxNI.isEmpty()) {
-            maxNutrition.put(maxNI, max);
-            return maxNutrition;
-        }
-        return null;
     }
 
 
@@ -368,10 +339,10 @@ public class SeasonStrategiesApp extends JFrame {
                 ui.output(ss.toString());
                 ui.output("No changes made to existing plan!");
             } else {
-                createRaceStrategy(ui, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
+                obtainRaceStrategy(ui, ss.getAthlete(), createPreferredNutrition(ss), ss, racesToAdd);
                 ValidateStringInput v2 = (i) -> i.equals("Yes") || i.equals("No");
                 String summary = ui.queryUserForStringWithRetry("Do you want to view a summary of this "
-                        + "season's race nutrition strategies? If yes, please enter 'Yes' to save to file, "
+                        + "season's race nutrition strategies? If yes, please enter 'Yes' to view, "
                         + "if no, please enter 'No'", v2);
                 if (summary.equals("Yes")) {
                     ui.output(ss.toString());
@@ -403,7 +374,7 @@ public class SeasonStrategiesApp extends JFrame {
         RaceNutrition preferredNutrition = queryNutritionInfo(ui);
         SeasonStrategies ss = new SeasonStrategies(athlete, preferredNutrition,0);
         // For each race, query for info about race conditions, create a race strategy, and add to season strategies
-        createRaceStrategy(ui, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
+        obtainRaceStrategy(ui, ss.getAthlete(), ss.getPreferredNutrition(), ss, athlete.getNumRaces());
         // Print final results to user if prompted
         ValidateStringInput v1 = (i) -> i.equals("Yes") || i.equals("No");
         String summary = ui.queryUserForStringWithRetry("Do you want to view a summary of this "
@@ -456,7 +427,8 @@ public class SeasonStrategiesApp extends JFrame {
             //runs without loaded file
             runWithoutLoadingFile(ui);
         }
-        System.exit(0);
+        exit();
+        // System.exit(0);
     }
 
     // EFFECTS: creates the image and resizes it. Creates the JFrame to display the label and the image. Displays the
@@ -477,7 +449,7 @@ public class SeasonStrategiesApp extends JFrame {
         String showMax = ui.queryUserForStringWithRetry("Do you want to view the most frequent nutrition "
                 + "item this season? If yes, please enter 'Yes', otherwise please enter 'No'.", v1);
         if (showMax.equals("Yes")) {
-            HashMap<String, Integer> maxNutritionMap = obtainMaxNutrition(ss);
+            HashMap<String, Integer> maxNutritionMap = ss.obtainMaxNutrition(ss);
             if (maxNutritionMap != null && !maxNutritionMap.isEmpty()) {
                 String maxNI = new ArrayList<String>(maxNutritionMap.keySet()).get(0);
                 int max = maxNutritionMap.get(maxNI);
@@ -494,5 +466,14 @@ public class SeasonStrategiesApp extends JFrame {
         maxImageFrame.setLocationRelativeTo(null);
         maxImageFrame.setVisible(true);
     }
+
+    public void exit() {
+        EventLog el = EventLog.getInstance();
+        for (Event e : el) {
+            System.out.println(e.toString() + "\n");
+        }
+        System.exit(0);
+    }
+
 
 }

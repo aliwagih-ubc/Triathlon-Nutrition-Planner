@@ -1,13 +1,19 @@
 package model.strategy;
 
+import model.Event;
+import model.EventLog;
+import model.nutrition.NutritionSummary;
 import model.nutrition.RaceNutrition;
+import model.race.Race;
 import model.triathlete.Triathlete;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // Represents a complete racing season summary of the race nutrition strategies
 // developed for all the races.
@@ -84,15 +90,79 @@ public class SeasonStrategies implements Writable {
         return preferredNutrition;
     }
 
-    // EFFECTS: sets this preferred nutrition to preferred nutrition
-    public void setPreferredNutrition(RaceNutrition preferredNutrition) {
-        this.preferredNutrition = preferredNutrition;
-    }
+//    // EFFECTS: sets this preferred nutrition to preferred nutrition
+//    public void setPreferredNutrition(RaceNutrition preferredNutrition) {
+//        this.preferredNutrition = preferredNutrition;
+//    }
 
     // EFFECTS: sets this rating to rating
     public void setRating(int rating) {
         this.rating = rating;
+        EventLog.getInstance().logEvent(new Event("Season strategies rated."));
     }
+
+    
+    // EFFECTS: calculates the most frequent nutrition item in the season's strategies and returns its name and 
+    //          number of items
+    public HashMap obtainMaxNutrition(SeasonStrategies ss) {
+        HashMap<String, Integer> itemCounts = new HashMap<>();
+        aggregateNumberOfItems(ss, itemCounts);
+        int max = 0;
+        String maxNI = "";
+        for (Map.Entry<String, Integer> entry : itemCounts.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                maxNI = entry.getKey();
+            }
+        }
+        HashMap<String, Integer> maxNutrition = new HashMap<>();
+        if (!maxNI.isEmpty()) {
+            maxNutrition.put(maxNI, max);
+            EventLog.getInstance().logEvent(new Event("Most frequent nutrition item name and count determined."));
+            return maxNutrition;
+        }
+        return null;
+    }
+
+
+    // EFFECTS: aggregates the number of each category of nutrition items (solid, liquid, supplement) in the season
+    //          strategy.
+    public static void aggregateNumberOfItems(SeasonStrategies ss, HashMap<String, Integer> itemCounts) {
+        for (RaceNutrition rn : ss.getNutritionPlans()) {
+            if (rn != null) {
+                String itemName = rn.getSupplement().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSupplements());
+                itemName = rn.getLiquid().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumLiquids());
+                itemName = rn.getSolid().getItemName();
+                itemCounts.put(itemName, itemCounts.getOrDefault(itemName, 0) + rn.getNumSolids());
+            }
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: create a race strategy for the race and adds it to Season Strategies
+    public void createRaceStrategy(Race race, Triathlete athlete, RaceNutrition nutrition,
+                                   SeasonStrategies ss) {
+//        for (int i = 1; i <= numRaces; i++) {
+        RaceStrategy strategy = new RaceStrategy(athlete, race, nutrition);
+        ss.appendRaceStrategy(strategy);
+        NutritionSummary raceRequirements = strategy.calcRaceRequirement();
+        EventLog.getInstance().logEvent(new Event("Anticipated caloric absorption rate determined based on "
+                + "anticipated weather conditions."));
+        EventLog.getInstance().logEvent(new Event("Average finish time obtained based on user biometrics and "
+                + "race details."));
+        EventLog.getInstance().logEvent(new Event("Average macronutrients to complete the race calculated."));
+
+        RaceNutrition plan = strategy.calculateOptimumNutritionPlan(raceRequirements);
+        EventLog.getInstance().logEvent(new Event("Optimum nutrition plan to complete the race with the "
+                + "athlete's preferred nutrition items determined."));
+        ss.appendRaceNutrition(plan);
+        EventLog.getInstance().logEvent(new Event("Race nutrition plan added to the season's strategies."));
+
+//        }
+    }
+
 
     // MODIFIES: this
     // EFFECTS: returns a comprehensible and formatted string representation of all the racing

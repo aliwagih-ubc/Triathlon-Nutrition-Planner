@@ -23,7 +23,7 @@
                     "numLiquids": 8
                 },
                 "distance": "sprint",
-                "season": "winter"
+                "season": "summer"
             },
             "preferredNutrition": {
                 "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
@@ -52,7 +52,7 @@
                     "numLiquids": 8
                 },
                 "distance": "sprint",
-                "season": "summer"
+                "season": "winter"
             },
             "preferredNutrition": {
                 "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
@@ -81,7 +81,7 @@
                     "numLiquids": 14
                 },
                 "distance": "olympic",
-                "season": "winter"
+                "season": "spring"
             },
             "preferredNutrition": {
                 "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
@@ -108,6 +108,7 @@
         "supplementNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)"
     },
     "nutrition plans": [
+        {"nutrition plan": "No possible plan within the maximum nutrition limit for this race"},
         {
             "solidNutrition": "(Calories: 105 - Carbs: 27 - Potassium: 422 - Sodium: 1)",
             "numSupplements": 4,
@@ -119,7 +120,6 @@
             "numLiquids": 8,
             "supplementNutrition": "(Calories: 400 - Carbs: 100 - Potassium: 0 - Sodium: 88)"
         },
-        {"nutrition plan": "No possible plan within the maximum nutrition limit for this race"},
         {
             "solidNutrition": "(Calories: 0 - Carbs: 0 - Potassium: 0 - Sodium: 0)",
             "numSupplements": 10,

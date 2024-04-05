@@ -50,7 +50,6 @@ public class Race implements Writable {
     }
 
     // REQUIRES: A validated race with one of the 4 expected distances
-    // MODIFIES: this
     // EFFECTS: generates an index pointer to point to the correct column based on the user's inputs.
     public int generateColumnIndex() {
         if (this.distance.equals("sprint")) {
@@ -65,12 +64,13 @@ public class Race implements Writable {
     }
 
     // REQUIRES: A validated race happening during one of the four seasons.
-    // MODIFIES: this
     // EFFECTS: calculates the anticipated caloric absorption rate based on the anticipated weather conditions.
     public double calcCaloricAbsorptionRate() {
         if (this.season.equals("summer") || this.season.equals("fall")) {
             return 0.18;
         }
+
+
         return 0.15;
     }
 

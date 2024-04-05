@@ -1,5 +1,6 @@
 package model.strategy;
 
+
 import model.nutrition.NutritionItem;
 import model.nutrition.RaceNutrition;
 import model.nutrition.NutritionSummary;
@@ -63,6 +64,7 @@ public class RaceStrategy implements Writable {
             }
         }
         return 0;
+
     }
 
     // REQUIRES:
@@ -82,6 +84,7 @@ public class RaceStrategy implements Writable {
         int carbs = (int) (75 * (estimatedFinishTime / 60));
         int potassium = (int) (250 * (estimatedFinishTime / 60));
         int sodium = (int) (800 * (estimatedFinishTime / 60));
+
         return new NutritionSummary(calories, carbs, potassium, sodium);
     }
 
@@ -94,28 +97,55 @@ public class RaceStrategy implements Writable {
         NutritionItem preferredSolid = preferredNutrition.getSolid();
         RaceNutrition recommendedPlan = new RaceNutrition(preferredSupplement, preferredLiquid, preferredSolid);
 
-        for (int i = 1; i <= this.race.getMaxSupplements(); i++) {
-            recommendedPlan.incrementNumSupplements();
-            if (recommendedPlan.areAllNutritionRequirementsMet(reqs)) {
-                return recommendedPlan;
-            }
+        RaceNutrition recommendedPlan1 = getSupplementsRaceNutrition(reqs, recommendedPlan);
+        if (recommendedPlan1 != null) {
+            return recommendedPlan1;
         }
 
-        for (int i = 1; i <= this.race.getMaxLiquids(); i++) {
-            recommendedPlan.incrementNumLiquids();
-            if (recommendedPlan.areAllNutritionRequirementsMet(reqs)) {
-                return recommendedPlan;
-            }
+        RaceNutrition recommendedPlan2 = getLiquidsRaceNutrition(reqs, recommendedPlan);
+        if (recommendedPlan2 != null) {
+            return recommendedPlan2;
         }
 
+        RaceNutrition recommendedPlan3 = getSolidsRaceNutrition(reqs, recommendedPlan);
+        if (recommendedPlan3 != null) {
+            return recommendedPlan3;
+        }
+
+        // Requirements are NOT met, even with max amount of nutrition given
+        return null;
+    }
+
+    // EFFECTS: calculates the number of solid nutrition items needed to complete the race.
+    public RaceNutrition getSolidsRaceNutrition(NutritionSummary reqs, RaceNutrition recommendedPlan) {
         for (int i = 1; i <= this.race.getMaxSolids(); i++) {
             recommendedPlan.incrementNumSolids();
             if (recommendedPlan.areAllNutritionRequirementsMet(reqs)) {
                 return recommendedPlan;
             }
         }
+        return null;
+    }
 
-        // Requirements are NOT met, even with max amount of nutrition given
+    // EFFECTS: calculates the number of liquid nutrition items needed to complete the race.
+    public RaceNutrition getLiquidsRaceNutrition(NutritionSummary reqs, RaceNutrition recommendedPlan) {
+        for (int i = 1; i <= this.race.getMaxLiquids(); i++) {
+            recommendedPlan.incrementNumLiquids();
+            if (recommendedPlan.areAllNutritionRequirementsMet(reqs)) {
+                return recommendedPlan;
+            }
+        }
+        return null;
+    }
+
+    // EFFECTS: calculates the number of supplements needed to complete the race.
+    public RaceNutrition getSupplementsRaceNutrition(NutritionSummary reqs, RaceNutrition recommendedPlan) {
+        for (int i = 1; i <= this.race.getMaxSupplements(); i++) {
+            recommendedPlan.incrementNumSupplements();
+            if (recommendedPlan.areAllNutritionRequirementsMet(reqs)) {
+                return recommendedPlan;
+            }
+        }
         return null;
     }
 
