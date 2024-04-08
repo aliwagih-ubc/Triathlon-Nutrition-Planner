@@ -136,9 +136,9 @@ public class SeasonStrategiesApp extends JFrame {
     }
 
     public interface UserInteraction {
-        String queryUserForStringWithRetry(String inputMessage, ValidateStringInput vs);
+        String queryUserForStringWithRetry(String inputMessage, SeasonStrategiesApp.ValidateStringInput vs);
 
-        int queryUserForIntWithRetry(String inputMessage, ValidateIntInput vi);
+        int queryUserForIntWithRetry(String inputMessage, SeasonStrategiesApp.ValidateIntInput vi);
 
         void output(String message);
     }

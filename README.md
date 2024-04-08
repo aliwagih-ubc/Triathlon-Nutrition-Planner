@@ -30,3 +30,50 @@ This project is of interest to me as I failed to efficiently devise a race nutri
 - You can locate my visual component upon completing the race queries and the program outputting the summary of race nutrition strategies.
 - You can save the state of the application by typing "Save" when prompted prior to quitting.
 - You can reload the state of the application by typing "Load" when prompted upon starting the program.
+
+## Phase 4: Task 2
+Event Logging Sample:
+
+Sun Apr 07 23:17:19 PDT 2024
+Anticipated caloric absorption rate determined based on anticipated weather conditions.
+
+Sun Apr 07 23:17:19 PDT 2024
+Average finish time obtained based on user biometrics and race details.
+
+Sun Apr 07 23:17:19 PDT 2024
+Average macronutrients to complete the race calculated.
+
+Sun Apr 07 23:17:19 PDT 2024
+Optimum nutrition plan to complete the race with the athlete's preferred nutrition items determined.
+
+Sun Apr 07 23:17:19 PDT 2024
+Race nutrition plan added to the season's strategies.
+
+Sun Apr 07 23:17:23 PDT 2024
+Anticipated caloric absorption rate determined based on anticipated weather conditions.
+
+Sun Apr 07 23:17:23 PDT 2024
+Average finish time obtained based on user biometrics and race details.
+
+Sun Apr 07 23:17:23 PDT 2024
+Average macronutrients to complete the race calculated.
+
+Sun Apr 07 23:17:23 PDT 2024
+Optimum nutrition plan to complete the race with the athlete's preferred nutrition items determined.
+
+Sun Apr 07 23:17:23 PDT 2024
+Race nutrition plan added to the season's strategies.
+
+Sun Apr 07 23:17:30 PDT 2024
+Most frequent nutrition item name and count determined.
+
+Sun Apr 07 23:17:31 PDT 2024
+Season strategies rated.
+
+
+## Phase 4: Task 3
+Looking at the design presented in my UML class diagram, I can identify a few areas for improvement.
+Firstly, I currently have the UserInteraction interface within the SeasonStrategiesApp class to handle the GUI and 
+Console user interactions. To enhance the single responsibility principle, I would extract that interface to avoid having nested classes.
+Additionally, there is significant coupling between classes that I can work to reduce. For example, the SeasonStrategies class contains a list of RaceStrategy objects and a list of RaceNutrition objects, similarly, the RaceStrategy class contains a list of RaceNutrition objects. By refactoring, I can improve the association relationships between these classes and possibly eliminate the reference from SeasonStrategies to RaceNutrition. 
+The same concept applies to the Triathlete class as both SeasonStrategies and RaceStrategy hold references to it but in an improved design only one of those references could be maintained. 
